@@ -2,17 +2,88 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Registered so the completion sweep can fade the highlighter ink itself, not the words under it. */
-@property --hl {
+/* Registered so the completion sweep can fade the highlighter colour itself, not the words under it. */
+@property --sweep {
   syntax: '<color>';
   inherits: true;
-  initial-value: #FFE24D;
+  initial-value: #FDE68A;
+}
+
+/* Registered so a scroll edge's fade can grow in and out (see .scroll-edges). */
+@property --edge-top {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@property --edge-bottom {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
 }
 
 @layer base {
+  /* Light theme: white canvas, zinc text and hairlines, one clinical teal. */
   :root {
-    --hl: theme('colors.hl.yellow');
+    --canvas: 255 255 255;
+    --subtle: 247 247 248;
+    --surface: 255 255 255;
+    --fg: 24 24 27;
+    --fg-soft: 63 63 70;
+    --fg-muted: 104 104 112;
+    --fg-faint: 161 161 170;
+    --line: 228 228 231;
+    --line-strong: 212 212 216;
+    --accent: 15 118 110;
+    --accent-hover: 17 94 89;
+    --accent-fg: 255 255 255;
+    --accent-text: 15 118 110;
+    --accent-soft: 240 253 250;
+    --accent-focus-alpha: 1; /* field and composer focus ring */
+    --hl-key: 252 211 77;
+    --hl-key-fg: 9 9 11; /* numerals on the lit key; the key is the same in both themes */
+    --hl-key-ring: 245 158 11; /* used at 50% */
+    --hl-soft: 255 251 235;
+    --hl-ring: 252 211 77;
+    --maple: 220 38 38;
+    --sweep-ink: #FDE68A;
+    --selection: 204 251 241;
     color-scheme: light;
+  }
+
+  /* Dark theme for night shifts: zinc-900 canvas, a darker rail, lifted cards. Lines are
+     solid so borders read the same on every surface. */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --canvas: 24 24 27;
+      --subtle: 18 18 20;
+      --surface: 31 31 35;
+      --fg: 244 244 245;
+      --fg-soft: 212 212 216;
+      --fg-muted: 161 161 170;
+      --fg-faint: 113 113 122;
+      --line: 46 46 51;
+      --line-strong: 63 63 70;
+      --accent: 45 212 191;
+      --accent-hover: 94 234 212;
+      --accent-fg: 9 9 11;
+      --accent-text: 94 234 212;
+      --accent-soft: 26 43 43;
+      /* A full-strength teal-400 ring flares on zinc; half still clears 3:1 on the surface. */
+      --accent-focus-alpha: 0.5;
+      --hl-key: 252 211 77;
+      /* The lit card: amber-500 at 14% and 55% over the surface, so it reads as amber, not
+         khaki, and keeps Muted Ink at 4.9:1 and Link Teal at 8.6:1. */
+      --hl-soft: 61 49 32;
+      --hl-ring: 149 101 22;
+      --maple: 248 113 113;
+      --sweep-ink: rgb(252 211 77 / 0.3);
+      --selection: 19 78 74;
+      color-scheme: dark;
+    }
+  }
+
+  :root {
+    --sweep: var(--sweep-ink);
   }
 
   html {
@@ -22,14 +93,14 @@
   }
 
   body {
-    @apply font-sans text-ink bg-paper text-sm;
-    caret-color: theme('colors.pen.DEFAULT');
+    @apply bg-canvas font-sans text-sm text-fg;
+    caret-color: rgb(var(--accent));
   }
 
-  /* Browser surfaces carry the world: highlighter selection, ballpoint focus, ink scrollbars. */
+  /* Browser surfaces carry the palette: teal selection and focus, zinc scrollbars. */
   ::selection {
-    background: theme('colors.hl.yellow');
-    color: theme('colors.ink.DEFAULT');
+    background: rgb(var(--selection));
+    color: rgb(var(--fg));
   }
 
   :focus {
@@ -37,9 +108,8 @@
   }
 
   :focus-visible {
-    outline: 2px solid theme('colors.pen.DEFAULT');
+    outline: 2px solid rgb(var(--accent));
     outline-offset: 2px;
-    border-radius: 4px;
   }
 
   a {
@@ -52,7 +122,7 @@
   }
 
   * {
-    scrollbar-color: theme('colors.rule.strong') transparent;
+    scrollbar-color: rgb(var(--line-strong)) transparent;
     scrollbar-width: thin;
   }
 
@@ -62,7 +132,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: theme('colors.rule.strong');
+    background: rgb(var(--line-strong));
     border-radius: 999px;
     border: 3px solid transparent;
     background-clip: padding-box;
@@ -80,7 +150,7 @@
 
 @layer components {
   .kbd {
-    @apply inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 text-2xs font-semibold rounded border;
+    @apply inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-md border border-line bg-surface px-1 font-sans text-2xs font-medium text-fg-muted;
     font-variant-numeric: tabular-nums;
   }
 
@@ -88,9 +158,9 @@
     font-variant-numeric: lining-nums tabular-nums;
   }
 
-  /* The printout: answer prose set in the journal face. */
+  /* Answer prose, set in the journal face. */
   .answer {
-    @apply font-serif text-read text-ink max-w-measure;
+    @apply max-w-measure font-serif text-read text-fg;
     font-variant-numeric: lining-nums tabular-nums;
     hyphens: manual;
   }
@@ -101,9 +171,9 @@
     text-wrap: pretty;
   }
   .answer :where(h1, h2, h3, h4) {
-    @apply font-sans font-bold text-ink mt-7 mb-2;
+    @apply mb-2 mt-7 font-sans font-semibold text-fg;
     font-size: theme('fontSize.sm[0]');
-    letter-spacing: 0.01em;
+    letter-spacing: 0.005em;
   }
   .answer > :where(:first-child) {
     @apply mt-0;
@@ -121,31 +191,35 @@
     @apply mb-1.5 pl-1;
   }
   .answer :where(li)::marker {
-    color: theme('colors.pen.DEFAULT');
+    color: rgb(var(--fg-faint));
+  }
+  .answer :where(ol > li)::marker {
+    @apply font-sans text-xs font-semibold;
+    color: rgb(var(--fg-muted));
   }
   .answer :where(a:not(.cite-key)) {
-    @apply text-pen underline;
+    @apply text-accent-text underline decoration-accent-text/40 hover:decoration-accent-text;
   }
   .answer :where(code) {
-    @apply font-sans text-[0.9em] bg-paper-shade rounded px-1 py-0.5;
+    @apply rounded bg-subtle px-1 py-0.5 font-sans text-[0.9em] ring-1 ring-inset ring-line;
   }
   .answer :where(table) {
-    @apply w-full font-sans text-xs border-collapse;
+    @apply w-full border-collapse font-sans text-xs;
   }
   .answer :where(th) {
-    @apply text-left font-bold border-b border-ink py-1.5 pr-3;
+    @apply border-b border-line-strong py-2 pr-3 text-left font-semibold text-fg;
   }
   .answer :where(td) {
-    @apply border-b border-rule py-1.5 pr-3 align-top;
+    @apply border-b border-line py-2 pr-3 align-top;
   }
   .answer :where(blockquote) {
-    @apply pl-4 border-l border-rule-strong text-ink-soft italic;
+    @apply border-l-2 border-line-strong pl-4 italic text-fg-soft;
   }
 
   /* Signature move: the highlighter sweep across a claim. The background is sliced
      across line fragments, so the stroke travels through the sentence line by line. */
   .claim {
-    background-image: linear-gradient(176deg, transparent 12%, var(--hl) 14%, var(--hl) 84%, transparent 88%);
+    background-image: linear-gradient(176deg, transparent 12%, var(--sweep) 14%, var(--sweep) 84%, transparent 88%);
     background-repeat: no-repeat;
     background-position: 0 60%;
     background-size: 0% 100%;
@@ -158,7 +232,7 @@
   }
 
   /* The one authored moment: as a live answer finishes, one slower stroke crosses its
-     bottom line, holds, then the ink settles back into the paper so yellow is free again
+     bottom line, holds, then the colour settles back into the page so amber is free again
      for the citation being read. Never on saved threads or under reduced motion. */
   .claim.is-sweeping {
     animation: claim-sweep 2600ms linear both;
@@ -174,13 +248,34 @@
     }
     68% {
       background-size: 100% 100%;
-      --hl: theme('colors.hl.yellow');
+      --sweep: var(--sweep-ink);
       animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
     100% {
       background-size: 100% 100%;
-      --hl: rgb(255 226 77 / 0);
+      --sweep: transparent;
     }
+  }
+
+  /* Scroll edges: where the thread and the evidence margin meet the docked composer band,
+     content fades out over 1.5rem instead of shearing at the line. A mask, not an overlay,
+     so it fades to whatever lies behind in either theme. The fade is there only while more
+     content lies past that edge (useScrollEdges sets the attributes). */
+  .scroll-edges {
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      #000 var(--edge-top),
+      #000 calc(100% - var(--edge-bottom)),
+      transparent
+    );
+    transition: --edge-top 200ms ease-out, --edge-bottom 200ms ease-out;
+  }
+  .scroll-edges[data-more-above] {
+    --edge-top: 1.5rem;
+  }
+  .scroll-edges[data-more-below] {
+    --edge-bottom: 1.5rem;
   }
 
   .stream-caret::after {
@@ -190,7 +285,8 @@
     height: 1.05em;
     margin-left: 2px;
     vertical-align: -0.15em;
-    background: theme('colors.pen.DEFAULT');
+    border-radius: 1px;
+    background: rgb(var(--accent));
     @apply animate-blink;
   }
 }

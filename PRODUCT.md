@@ -46,6 +46,7 @@ Canada-first evidence. Answers draw on Canadian society guidelines (CCS, Diabete
 - Must not read as a consumer chatbot (chat bubbles, emoji, gradients), as pharma advertising (marketing gloss, stock imagery), or as a grey, cramped EMR form.
 - Evidence must stay visible while reading, not buried below the answer.
 - Not a medical device: a "not a substitute for clinical judgement" notice and the no-identifiers warning for images stay.
+- Visual register: the clinical-reference standard, sitting alongside OpenEvidence / UpToDate and Perplexity / Notion, executed at full craft rather than an invented visual world. Light and dark themes follow the system setting.
 
 ## Evidence on Hand
 

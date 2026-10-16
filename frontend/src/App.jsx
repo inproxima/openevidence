@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ArrowRight, Menu, Plus } from 'lucide-react'
+import { AlertCircle, ArrowUpRight, Menu, Plus } from 'lucide-react'
 import { api, streamAsk } from './api.js'
 import { useAuth } from './auth.jsx'
+import AppMark from './components/AppMark.jsx'
+import { KEY_FACE } from './components/CiteKey.jsx'
 import Composer from './components/Composer.jsx'
 import EvidenceBadge, { CanadaMark, LEVELS } from './components/EvidenceBadge.jsx'
-import RunningHead, { printDate } from './components/RunningHead.jsx'
+import RunningHead from './components/RunningHead.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import Turn, { TURN_COLUMNS } from './components/Turn.jsx'
+import { useScrollEdges } from './scrollEdges.js'
+import { alert, btn, scrim } from './ui.js'
 
 const EXAMPLES = [
   'First-line pharmacotherapy for type 2 diabetes with established ASCVD per Diabetes Canada?',
@@ -15,7 +19,7 @@ const EXAMPLES = [
   'Is aspirin recommended for preeclampsia prevention, and at what dose?',
 ]
 
-// The cover sheet's title-block fields (the same facts as the mode tooltips and search status).
+// What the two modes do and what gets searched (the same facts as the mode tooltips).
 const SHEET_FIELDS = [
   ['Quick', 'The top sources, in about 30 seconds'],
   ['Deep', 'A wider search and a structured evidence report, in about 2 minutes'],
@@ -190,6 +194,9 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [newQuestion])
 
+  // The thread fades out above the docked composer instead of shearing at its line.
+  useScrollEdges(scrollerRef, { enabled: turns.length > 0 })
+
   const rename = async (id, title) => {
     try {
       await api.rename(getToken, id, title)
@@ -212,14 +219,15 @@ export default function App() {
 
   if (auth.enabled && auth.ready && !auth.isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-pen px-4">
-        <div className="w-full max-w-sm rounded-sheet border border-ink bg-paper p-8 shadow-pop">
-          <h1 className="text-lg font-bold">{appName}</h1>
-          <p className="mt-2 text-sm text-ink-soft">An early preview for clinicians. Sign in with Google or your email, or create an account.</p>
-          <button type="button" onClick={auth.login} className="mt-6 w-full rounded-sheet bg-pen py-2.5 text-sm font-bold text-paper-white hover:bg-pen-dark">
+      <div className="flex min-h-screen items-center justify-center bg-subtle px-4">
+        <div className="w-full max-w-sm rounded-2xl bg-surface p-8 shadow-sm ring-1 ring-line">
+          <AppMark className="h-9 w-9" />
+          <h1 className="mt-5 text-lg font-semibold">{appName}</h1>
+          <p className="mt-2 text-sm text-fg-soft">An early preview for clinicians. Sign in with Google or your email, or create an account.</p>
+          <button type="button" onClick={auth.login} className={`${btn.primary} mt-6 h-10 w-full`}>
             Sign in
           </button>
-          <button type="button" onClick={auth.signup} className="mt-3 w-full rounded-sheet border border-pen py-2.5 text-sm font-bold text-pen hover:bg-pen-wash">
+          <button type="button" onClick={auth.signup} className={`${btn.secondary} mt-3 h-10 w-full`}>
             Create an account
           </button>
         </div>
@@ -228,12 +236,11 @@ export default function App() {
   }
 
   const empty = turns.length === 0
-  const today = new Date()
   // Same columns as a turn, so the composer lines up with the answer and the margin stays clear.
   const frame = 'mx-auto w-full max-w-[1180px] px-4 sm:px-8 xl:px-10'
 
   return (
-    <div className="flex h-[100dvh] overflow-hidden bg-paper">
+    <div className="flex h-[100dvh] overflow-hidden bg-canvas">
       <Sidebar
         open={sidebarOpen}
         appName={appName}
@@ -245,26 +252,30 @@ export default function App() {
         onDelete={remove}
         onClose={() => setSidebarOpen(false)}
       />
-      {sidebarOpen && <div className="fixed inset-0 z-30 bg-ink/30 animate-fade-in lg:hidden" onClick={() => setSidebarOpen(false)} />}
+      {sidebarOpen && <div className={`fixed inset-0 z-30 animate-fade-in lg:hidden ${scrim}`} onClick={() => setSidebarOpen(false)} />}
 
       <main className="flex min-w-0 flex-1 flex-col">
-        <div className="flex h-12 shrink-0 items-center gap-2 bg-pen px-2 text-paper-white lg:hidden">
-          <button type="button" onClick={() => setSidebarOpen(true)} aria-label="Open question history" className="inline-flex h-10 w-10 items-center justify-center rounded-sheet hover:bg-white/10">
+        <div className="flex h-12 shrink-0 items-center gap-2 border-b border-line bg-canvas px-2 lg:hidden">
+          <button type="button" onClick={() => setSidebarOpen(true)} aria-label="Open question history" className={btn.icon}>
             <Menu size={20} />
           </button>
-          <span className="text-sm font-bold">{appName}</span>
+          <span className="flex min-w-0 items-center gap-2 text-sm font-semibold">
+            <AppMark className="h-5 w-5" />
+            <span className="truncate">{appName}</span>
+          </span>
           {!empty && (
-            <button type="button" onClick={newQuestion} className="ml-auto inline-flex h-9 items-center gap-1 rounded-sheet px-2.5 text-xs font-bold hover:bg-white/10">
-              <Plus size={15} /> New
+            <button type="button" onClick={newQuestion} className={`${btn.secondarySm} ml-auto`}>
+              <Plus size={15} className="text-accent-text" /> New
             </button>
           )}
         </div>
 
         {error && (
           <div role="alert" className={`${frame} mt-3`}>
-            <div className="flex items-start justify-between gap-3 rounded-sheet bg-alert-tint px-3.5 py-2.5 text-sm text-alert">
-              <span>{error}</span>
-              <button type="button" onClick={() => setError('')} className="shrink-0 font-bold hover:underline">
+            <div className={`flex items-start gap-2.5 px-3.5 py-2.5 text-sm ${alert}`}>
+              <AlertCircle size={17} aria-hidden="true" className="mt-0.5 shrink-0" />
+              <span className="min-w-0 flex-1">{error}</span>
+              <button type="button" onClick={() => setError('')} className="shrink-0 rounded font-semibold underline-offset-2 hover:underline">
                 Dismiss
               </button>
             </div>
@@ -273,31 +284,15 @@ export default function App() {
 
         {empty ? (
           <div className="flex-1 overflow-y-auto">
-            {/* The cover sheet: a ruled title block across the page, then the composer and the
-                contents on the answer column's edge, with the key where the evidence margin will be. */}
-            <div className={`${frame} pb-16 pt-6 sm:pt-10 xl:pt-14`}>
-              <header className="border-t border-ink">
-                <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 pt-4">
-                  <h1 className="text-title font-bold sm:text-display">Ask a clinical question</h1>
-                  <time dateTime={today.toLocaleDateString('en-CA')} className="text-xs font-bold text-ink-soft tnum">
-                    {printDate(today)}
-                  </time>
-                </div>
-                <p className="mt-3 max-w-[56ch] text-read text-ink-soft">Every claim in the answer is marked with the source that supports it.</p>
-                <dl className="mt-5 grid border-b border-t border-b-ink border-t-rule text-xs xl:grid-cols-3">
-                  {SHEET_FIELDS.map(([term, detail]) => (
-                    <div
-                      key={term}
-                      className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 border-rule py-2.5 [&:not(:first-child)]:border-t xl:[&:not(:first-child)]:border-l xl:[&:not(:first-child)]:border-t-0 xl:[&:not(:first-child)]:pl-4 xl:[&:not(:last-child)]:pr-4"
-                    >
-                      <dt className="font-bold text-ink">{term}</dt>
-                      <dd className="text-pretty text-ink-muted">{detail}</dd>
-                    </div>
-                  ))}
-                </dl>
+            {/* Home: the heading across the page, then the composer and examples on the answer
+                column's edge, with the reference notes where the evidence margin will be. */}
+            <div className={`${frame} pb-16 pt-8 sm:pt-14 xl:pt-20`}>
+              <header className="max-w-measure">
+                <h1 className="text-title font-semibold tracking-[-0.015em] sm:text-display sm:tracking-[-0.02em]">Ask a clinical question</h1>
+                <p className="mt-3 text-read text-fg-soft">Every claim in the answer is marked with the source that supports it.</p>
               </header>
 
-              <div className={`mt-8 sm:mt-10 ${TURN_COLUMNS}`}>
+              <div className={`mt-8 ${TURN_COLUMNS}`}>
                 <div className="min-w-0 max-w-measure">
                   <Composer
                     onSubmit={ask}
@@ -308,75 +303,85 @@ export default function App() {
                     placeholder="Anticoagulation for AF in a 78-year-old with CKD stage 4?"
                     autoFocus
                   />
-                  <p className="mt-2 text-2xs text-ink-muted">Not a substitute for clinical judgement. Don't enter patient identifiers.</p>
+                  <p className="mt-2 text-2xs text-fg-muted">Not a substitute for clinical judgement. Don't enter patient identifiers.</p>
 
-                  <section aria-labelledby="examples-heading" className="mt-10">
-                    <h2 id="examples-heading" className="text-sm font-bold">
+                  <section aria-labelledby="examples-heading" className="mt-12">
+                    <h2 id="examples-heading" className="text-sm font-semibold">
                       Example questions
                     </h2>
-                    <ol className="mt-2 border-t border-ink">
-                      {EXAMPLES.map((q, i) => (
-                        <li key={q} className="border-b border-rule">
+                    <ul className="mt-3 divide-y divide-line border-y border-line">
+                      {EXAMPLES.map((q) => (
+                        <li key={q}>
                           <button
                             type="button"
                             onClick={() => ask({ question: q, image: null })}
-                            className="group flex w-full items-start gap-3 py-3 text-left text-sm text-ink hover:text-pen"
+                            className="group flex w-full items-start gap-3 py-3 text-left text-sm text-fg-soft transition-colors hover:text-fg"
                           >
-                            <span aria-hidden="true" className="w-4 shrink-0 text-right font-bold text-pen tnum">
-                              {i + 1}
-                            </span>
                             <span className="min-w-0 flex-1">{q}</span>
-                            <ArrowRight
-                              size={15}
+                            <ArrowUpRight
+                              size={16}
                               aria-hidden="true"
-                              className="mt-0.5 shrink-0 text-ink-faint transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:text-pen"
+                              className="mt-0.5 shrink-0 text-fg-faint transition-[color,transform] duration-200 ease-out group-hover:-translate-y-px group-hover:translate-x-px group-hover:text-accent-text"
                             />
                           </button>
                         </li>
                       ))}
-                    </ol>
+                    </ul>
                   </section>
                 </div>
 
-                <section aria-labelledby="key-heading" className="mt-10 max-w-measure xl:mt-0 xl:max-w-none xl:border-l xl:border-rule xl:pl-5">
-                  <h2 id="key-heading" className="border-b border-ink pb-2 text-sm font-bold">
-                    Key to sources
-                  </h2>
-                  <dl className="mt-3 space-y-2.5 text-pretty text-xs text-ink-soft">
-                    <div className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-x-3">
-                      <dt>
-                        <span
-                          aria-hidden="true"
-                          className="inline-flex h-5 min-w-5 items-center justify-center rounded-key border border-pen bg-paper-white px-1 text-2xs font-bold text-pen tnum"
-                        >
-                          1
-                        </span>
-                        <span className="sr-only">Numbered key</span>
-                      </dt>
-                      <dd className="pt-0.5">A citation: hover or tap it to see the source and the words it supports</dd>
-                    </div>
-                    {KEY_LEVELS.map((level) => (
-                      <div key={level} className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-x-3">
+                <aside className="mt-12 max-w-measure space-y-10 xl:mt-0 xl:max-w-none xl:border-l xl:border-line xl:pl-6">
+                  <section aria-labelledby="modes-heading">
+                    <h2 id="modes-heading" className="text-sm font-semibold">
+                      Modes and sources
+                    </h2>
+                    <dl className="mt-3 space-y-2.5 text-xs">
+                      {SHEET_FIELDS.map(([term, detail]) => (
+                        <div key={term} className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3">
+                          <dt className="font-semibold text-fg">{term}</dt>
+                          <dd className="text-pretty text-fg-muted">{detail}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </section>
+
+                  <section aria-labelledby="key-heading">
+                    <h2 id="key-heading" className="text-sm font-semibold">
+                      Key to sources
+                    </h2>
+                    <dl className="mt-3 space-y-2.5 text-pretty text-xs text-fg-muted">
+                      <div className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-x-3">
                         <dt>
-                          <EvidenceBadge level={level} />
+                          <span aria-hidden="true" className={`${KEY_FACE} h-5 min-w-5 px-1.5 text-2xs`}>
+                            1
+                          </span>
+                          <span className="sr-only">Numbered key</span>
                         </dt>
-                        <dd className="pt-0.5">{LEVELS[level].note}</dd>
+                        <dd className="pt-0.5">A citation: hover or tap it to see the source and the words it supports</dd>
                       </div>
-                    ))}
-                    <div className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-x-3">
-                      <dt className="pt-0.5 text-2xs">
-                        <CanadaMark />
-                      </dt>
-                      <dd className="pt-0.5">Canadian source, shown in the byline</dd>
-                    </div>
-                  </dl>
-                </section>
+                      {KEY_LEVELS.map((level) => (
+                        <div key={level} className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-x-3">
+                          <dt>
+                            <EvidenceBadge level={level} />
+                          </dt>
+                          <dd className="pt-0.5">{LEVELS[level].note}</dd>
+                        </div>
+                      ))}
+                      <div className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-x-3">
+                        <dt className="pt-0.5 text-2xs">
+                          <CanadaMark />
+                        </dt>
+                        <dd className="pt-0.5">Canadian source, shown in the byline</dd>
+                      </div>
+                    </dl>
+                  </section>
+                </aside>
               </div>
             </div>
           </div>
         ) : (
           <>
-            <div ref={scrollerRef} className="flex-1 overflow-y-auto">
+            <div ref={scrollerRef} className="scroll-edges flex-1 overflow-y-auto">
               <RunningHead turns={turns} scroller={scrollerRef} frame={frame} />
               <div className={`${frame} space-y-16 pb-8 pt-6 sm:pb-10 sm:pt-8`}>
                 {turns.map((t) => (
@@ -385,12 +390,12 @@ export default function App() {
                 <div ref={bottomRef} />
               </div>
             </div>
-            <div className="shrink-0 border-t border-rule bg-paper pb-[env(safe-area-inset-bottom)]">
+            <div className="shrink-0 border-t border-line bg-canvas pb-[env(safe-area-inset-bottom)]">
               <div className={`${frame} py-3`}>
                 <div className={TURN_COLUMNS}>
                   <div className="min-w-0 max-w-measure">
                     <Composer onSubmit={ask} onStop={stop} busy={busy} mode={mode} setMode={setMode} placeholder="Ask a follow-up…" compact />
-                    <p className="mt-1.5 text-2xs text-ink-muted">Not a substitute for clinical judgement. Don't enter patient identifiers.</p>
+                    <p className="mt-1.5 text-2xs text-fg-muted">Not a substitute for clinical judgement. Don't enter patient identifiers.</p>
                   </div>
                 </div>
               </div>

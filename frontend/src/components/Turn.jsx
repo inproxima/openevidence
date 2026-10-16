@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { AlertTriangle, Check, Copy, CornerDownRight, ImageIcon, Loader2, Telescope, Zap } from 'lucide-react'
 import { answerClipboard, selectionClipboard, writeClipboard } from '../copyAnswer.js'
 import { TurnContext, WIDE_QUERY, citationOrder, useMedia } from '../turnContext.js'
 import AnswerBody from './AnswerBody.jsx'
 import EvidenceMargin from './EvidenceMargin.jsx'
 import SourceSheet from './SourceSheet.jsx'
+import { alert, dimmed, textAction } from '../ui.js'
 
 const STAGES = [
   ['plan', 'Plan'],
@@ -42,25 +44,25 @@ function Progress({ status, mode }) {
           return (
             <li key={id} className="flex items-center gap-1">
               <span
-                className={`inline-flex h-7 items-center gap-1.5 rounded-sheet px-2 ${
-                  now ? 'bg-ink font-bold text-paper' : done ? 'font-bold text-pen' : 'text-ink-muted'
+                className={`inline-flex h-7 items-center gap-1.5 rounded-full px-2.5 ${
+                  now ? 'bg-subtle font-semibold text-fg ring-1 ring-inset ring-line' : done ? 'font-semibold text-accent-text' : 'text-fg-muted'
                 }`}
               >
-                {done ? <Check size={14} /> : now ? <Loader2 size={14} className="animate-spin" /> : null}
+                {done ? <Check size={14} /> : now ? <Loader2 size={14} className="animate-spin text-accent-text" /> : null}
                 {label}
               </span>
-              {i < STAGES.length - 1 && <span className="h-px w-3 bg-rule-strong" aria-hidden="true" />}
+              {i < STAGES.length - 1 && <span className={`h-px w-3 ${done ? 'bg-accent/50' : 'bg-line-strong'}`} aria-hidden="true" />}
             </li>
           )
         })}
       </ol>
-      <p className="mt-3 text-sm text-ink-soft">{status.message}</p>
+      <p className="mt-3 text-sm text-fg-soft">{status.message}</p>
       {Object.keys(counts).length > 0 && (
-        <p className="mt-1 text-xs text-ink-muted tnum">
+        <p className="mt-1 text-xs text-fg-muted tnum">
           Found {Object.entries(counts).map(([k, v]) => `${v} ${k}`).join(' · ')}
         </p>
       )}
-      {mode === 'deep' && <p className="mt-1 text-xs text-ink-muted">Deep answers take about two minutes.</p>}
+      {mode === 'deep' && <p className="mt-1 text-xs text-fg-muted">Deep answers take about two minutes.</p>}
     </div>
   )
 }
@@ -135,12 +137,12 @@ export default function Turn({ turn, onFollowUp, busy }) {
     <TurnContext.Provider value={ctx}>
       <article data-turn className={`animate-rise ${TURN_COLUMNS}`}>
         <div className="min-w-0">
-          <header className="mb-6 max-w-measure border-b border-ink pb-4">
-            <h2 className="text-lg font-bold leading-snug sm:text-title">{turn.question}</h2>
+          <header className="mb-6 max-w-measure border-b border-line pb-4">
+            <h2 className="text-lg font-semibold leading-snug tracking-[-0.01em] sm:text-title sm:tracking-[-0.015em]">{turn.question}</h2>
             {/* Date and answer time sit in the thread's running header, so they are not repeated here. */}
-            <div className="mt-2 flex items-start gap-3 text-xs text-ink-muted tnum">
+            <div className="mt-2 flex items-start gap-3 text-xs text-fg-muted tnum">
               <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
-                <span className="inline-flex min-h-[28px] items-center gap-1 font-bold text-ink-soft">
+                <span className="inline-flex min-h-[28px] items-center gap-1 font-semibold text-fg-soft">
                   {turn.mode === 'deep' ? <Telescope size={13} /> : <Zap size={13} />}
                   {turn.mode === 'deep' ? 'Deep' : 'Quick'}
                 </span>
@@ -149,7 +151,7 @@ export default function Turn({ turn, onFollowUp, busy }) {
                   <button
                     type="button"
                     onClick={(e) => openSheet(order[0], e.currentTarget)}
-                    className="inline-flex min-h-[28px] items-center font-bold text-pen underline decoration-pen-mist underline-offset-4 hover:decoration-pen"
+                    className="inline-flex min-h-[28px] items-center rounded font-semibold text-accent-text underline decoration-accent-text/30 underline-offset-4 hover:decoration-accent-text"
                   >
                     {counts}
                   </button>
@@ -166,7 +168,7 @@ export default function Turn({ turn, onFollowUp, busy }) {
                 <button
                   type="button"
                   onClick={copy}
-                  className="inline-flex min-h-[28px] shrink-0 items-center gap-1 font-bold text-pen hover:underline"
+                  className={`${textAction.accent} min-h-[28px] shrink-0`}
                 >
                   {copied ? <Check size={13} /> : <Copy size={13} />}
                   {copied ? (
@@ -190,7 +192,7 @@ export default function Turn({ turn, onFollowUp, busy }) {
           )}
 
           {turn.error && (
-            <div role="alert" className="mt-2 flex max-w-measure items-start gap-2.5 rounded-sheet bg-alert-tint px-3.5 py-3 text-sm text-alert">
+            <div role="alert" className={`mt-2 flex max-w-measure items-start gap-2.5 px-3.5 py-3 text-sm ${alert}`}>
               <AlertTriangle size={17} className="mt-0.5 shrink-0" />
               <p>{turn.error}</p>
             </div>
@@ -203,19 +205,19 @@ export default function Turn({ turn, onFollowUp, busy }) {
           )}
 
           {turn.followups?.length > 0 && (
-            <section className="mt-8 max-w-measure">
-              <h3 className="mb-1 text-sm font-bold">Related questions</h3>
-              <ul className="border-t border-ink">
+            <section className="mt-10 max-w-measure">
+              <h3 className="text-sm font-semibold">Related questions</h3>
+              <ul className="mt-3 divide-y divide-line border-y border-line">
                 {turn.followups.map((q) => (
-                  <li key={q} className="border-b border-rule">
+                  <li key={q}>
                     <button
                       type="button"
                       disabled={busy}
                       onClick={() => onFollowUp(q)}
-                      className="flex w-full items-center gap-2.5 py-3 text-left text-sm text-ink hover:text-pen disabled:opacity-50"
+                      className={`group flex w-full items-start gap-3 py-3 text-left text-sm text-fg-soft transition-colors hover:text-fg ${dimmed}`}
                     >
-                      <CornerDownRight size={15} className="shrink-0 text-pen" />
-                      {q}
+                      <CornerDownRight size={15} aria-hidden="true" className="mt-0.5 shrink-0 text-fg-faint transition-colors group-hover:text-accent-text" />
+                      <span className="min-w-0 flex-1">{q}</span>
                     </button>
                   </li>
                 ))}
@@ -231,16 +233,20 @@ export default function Turn({ turn, onFollowUp, busy }) {
         )}
       </article>
 
-      {sheetSource && (
-        <SourceSheet
-          source={sheetSource}
-          position={sheetIndex + 1 || 1}
-          total={order.length || turn.sources.length}
-          onPrev={sheetIndex > 0 ? () => setSheet((s) => ({ ...s, n: order[sheetIndex - 1] })) : null}
-          onNext={sheetIndex >= 0 && sheetIndex < order.length - 1 ? () => setSheet((s) => ({ ...s, n: order[sheetIndex + 1] })) : null}
-          onClose={closeSheet}
-        />
-      )}
+      {/* Portalled to the body: inside the thread's spaced stack it would inherit a sibling
+          margin and leave the top of the screen uncovered. */}
+      {sheetSource &&
+        createPortal(
+          <SourceSheet
+            source={sheetSource}
+            position={sheetIndex + 1 || 1}
+            total={order.length || turn.sources.length}
+            onPrev={sheetIndex > 0 ? () => setSheet((s) => ({ ...s, n: order[sheetIndex - 1] })) : null}
+            onNext={sheetIndex >= 0 && sheetIndex < order.length - 1 ? () => setSheet((s) => ({ ...s, n: order[sheetIndex + 1] })) : null}
+            onClose={closeSheet}
+          />,
+          document.body,
+        )}
     </TurnContext.Provider>
   )
 }

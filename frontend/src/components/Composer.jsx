@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowUp, ImagePlus, Square, Telescope, X, Zap } from 'lucide-react'
+import { ArrowUp, ImagePlus, ShieldAlert, Square, Telescope, X, Zap } from 'lucide-react'
+import { btn } from '../ui.js'
 
 const MAX_SIDE = 1600 // px; larger photos are downscaled before upload
 
@@ -74,21 +75,22 @@ export default function Composer({ onSubmit, onStop, busy, mode, setMode, placeh
 
   return (
     <div className="w-full">
-      <div className="rounded-sheet border border-ink bg-paper-white shadow-lift transition-shadow focus-within:shadow-[0_0_0_3px_theme(colors.pen.mist)]">
+      <div className="rounded-xl bg-surface shadow-sm ring-1 ring-line transition-shadow focus-within:ring-2 focus-within:ring-accent-focus">
         {image && (
           <div className="flex items-start gap-3 px-3 pt-3">
             <div className="relative shrink-0">
-              <img src={image} alt="Attached" className="h-16 w-auto rounded border border-rule object-cover" />
+              <img src={image} alt="Attached" className="h-16 w-auto rounded-lg object-cover ring-1 ring-line" />
               <button
                 type="button"
                 onClick={() => setImage(null)}
                 aria-label="Remove image"
-                className="absolute -right-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-ink text-paper"
+                className="absolute -right-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-fg text-canvas shadow-sm ring-2 ring-surface hover:bg-fg-soft"
               >
                 <X size={13} />
               </button>
             </div>
-            <p className="pt-1 text-xs text-ink-soft">
+            <p className="flex gap-1.5 rounded-lg bg-amber-50 px-2.5 py-2 text-xs text-amber-900 ring-1 ring-inset ring-amber-600/20 dark:bg-amber-400/10 dark:text-amber-200 dark:ring-amber-400/20">
+              <ShieldAlert size={15} aria-hidden="true" className="mt-px shrink-0" />
               Remove names, faces, health card numbers and other identifiers before sending. Images are not stored.
             </p>
           </div>
@@ -109,13 +111,13 @@ export default function Composer({ onSubmit, onStop, busy, mode, setMode, placeh
             }
           }}
           placeholder={placeholder}
-          className={`block w-full resize-none border-0 bg-transparent px-4 pb-2 pt-3.5 text-[1.0625rem] leading-relaxed text-ink placeholder:text-ink-muted focus:ring-0 ${
+          className={`block w-full resize-none border-0 bg-transparent px-4 pb-2 pt-3.5 text-[1.0625rem] leading-relaxed text-fg placeholder:text-fg-muted focus:ring-0 ${
             compact ? 'min-h-[52px]' : 'min-h-[84px]'
           }`}
         />
         <div className="flex items-center justify-between gap-2 px-2.5 pb-2.5">
           <div className="flex items-center gap-1.5">
-            <div className="inline-flex rounded-sheet border border-rule p-0.5" role="radiogroup" aria-label="Answer mode">
+            <div className="inline-flex rounded-lg bg-subtle p-0.5 ring-1 ring-inset ring-line" role="radiogroup" aria-label="Answer mode">
               {MODES.map(([value, label, Icon, hint]) => (
                 <button
                   key={value}
@@ -124,11 +126,11 @@ export default function Composer({ onSubmit, onStop, busy, mode, setMode, placeh
                   aria-checked={mode === value}
                   title={hint}
                   onClick={() => setMode(value)}
-                  className={`inline-flex h-8 items-center gap-1.5 rounded-[4px] px-2.5 text-xs font-bold transition-colors ${
-                    mode === value ? 'bg-pen text-paper-white' : 'text-ink-muted hover:text-ink'
+                  className={`inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-semibold transition-colors focus-visible:outline-offset-0 ${
+                    mode === value ? 'bg-surface text-fg shadow-sm ring-1 ring-line' : 'text-fg-muted hover:text-fg'
                   }`}
                 >
-                  <Icon size={14} />
+                  <Icon size={14} className={mode === value ? 'text-accent-text' : ''} />
                   {label}
                 </button>
               ))}
@@ -138,7 +140,7 @@ export default function Composer({ onSubmit, onStop, busy, mode, setMode, placeh
               onClick={() => fileRef.current?.click()}
               title="Attach an image: ECG, skin photo, lab report"
               aria-label="Attach image"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-sheet text-ink-muted hover:bg-paper-shade hover:text-ink"
+              className={btn.icon}
             >
               <ImagePlus size={18} />
             </button>
@@ -149,7 +151,7 @@ export default function Composer({ onSubmit, onStop, busy, mode, setMode, placeh
               type="button"
               onClick={onStop}
               aria-label="Stop answering"
-              className="inline-flex h-9 items-center gap-1.5 rounded-sheet bg-ink px-3 text-xs font-bold text-paper hover:bg-black"
+              className={btn.dark}
             >
               <Square size={12} fill="currentColor" /> Stop
             </button>
@@ -159,9 +161,7 @@ export default function Composer({ onSubmit, onStop, busy, mode, setMode, placeh
               onClick={submit}
               disabled={!canSubmit}
               aria-label="Ask"
-              className={`inline-flex h-9 items-center gap-1.5 rounded-sheet px-3 text-xs font-bold transition-colors ${
-                canSubmit ? 'bg-pen text-paper-white hover:bg-pen-dark' : 'bg-paper-shade text-ink-faint'
-              }`}
+              className={btn.primary}
             >
               Ask <ArrowUp size={15} />
             </button>
@@ -169,7 +169,7 @@ export default function Composer({ onSubmit, onStop, busy, mode, setMode, placeh
         </div>
       </div>
       {imageError && (
-        <p role="alert" className="mt-1.5 text-xs text-alert">
+        <p role="alert" className="mt-1.5 text-xs text-red-700 dark:text-red-400">
           {imageError}
         </p>
       )}

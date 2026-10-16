@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Check, LogOut, MoreHorizontal, Pencil, Plus, Search, Trash2, X } from 'lucide-react'
 import { useAuth } from '../auth.jsx'
+import { btn, field, menu, menuItem, menuItemDanger } from '../ui.js'
+import AppMark from './AppMark.jsx'
 
-// History rail in ballpoint blue (ported from sara's Sidebar: filter, inline rename,
-// delete), listing conversation threads. A drawer below the lg breakpoint.
+// History rail (ported from sara's Sidebar: filter, inline rename, delete), listing
+// conversation threads. A quiet neutral column beside the page; a drawer below lg.
 export default function Sidebar({ open, appName, threads, activeId, onSelect, onNew, onRename, onDelete, onClose }) {
   const { enabled, user, logout } = useAuth()
   const [filter, setFilter] = useState('')
@@ -40,21 +42,17 @@ export default function Sidebar({ open, appName, threads, activeId, onSelect, on
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-40 flex w-[272px] flex-col bg-pen text-paper-white transition-transform duration-300 ease-out lg:relative lg:translate-x-0 ${
-        open ? 'translate-x-0 shadow-pop' : '-translate-x-full'
+      className={`fixed inset-y-0 left-0 z-40 flex w-[272px] flex-col border-r border-line bg-subtle text-fg transition-transform duration-300 ease-out lg:relative lg:translate-x-0 ${
+        open ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
       }`}
       aria-label="Question history"
     >
       <div className="flex h-14 shrink-0 items-center justify-between gap-2 px-4">
-        <span className="flex items-center gap-2.5 font-bold tracking-[0.01em]">
-          <span aria-hidden="true" className="relative inline-block h-6 w-6 rounded-[5px] bg-paper-white">
-            <span className="absolute inset-x-1 top-[9px] h-[7px] rounded-[1px] bg-hl-yellow" />
-            <span className="absolute inset-x-1 top-[6px] h-[1.5px] bg-pen" />
-            <span className="absolute left-1 right-2.5 top-[18px] h-[1.5px] bg-pen" />
-          </span>
-          {appName}
+        <span className="flex min-w-0 items-center gap-2.5 font-semibold">
+          <AppMark />
+          <span className="truncate">{appName}</span>
         </span>
-        <button type="button" onClick={onClose} aria-label="Close history" className="inline-flex h-9 w-9 items-center justify-center rounded-sheet hover:bg-white/10 lg:hidden">
+        <button type="button" onClick={onClose} aria-label="Close history" className={`${btn.icon} lg:hidden`}>
           <X size={18} />
         </button>
       </div>
@@ -63,14 +61,14 @@ export default function Sidebar({ open, appName, threads, activeId, onSelect, on
         <button
           type="button"
           onClick={onNew}
-          className="flex w-full items-center justify-between rounded-sheet bg-paper-white px-3 py-2.5 text-sm font-bold text-pen shadow-lift transition-transform active:scale-[0.99]"
+          className={`${btn.secondary} w-full justify-between pl-3 pr-2`}
         >
           <span className="inline-flex items-center gap-2">
-            <Plus size={16} /> New question
+            <Plus size={16} className="text-accent-text" /> New question
           </span>
-          <span className="hidden gap-1 text-pen lg:inline-flex">
-            <kbd className="kbd border-pen-mist">⌘</kbd>
-            <kbd className="kbd border-pen-mist">K</kbd>
+          <span className="hidden gap-1 lg:inline-flex">
+            <kbd className="kbd">⌘</kbd>
+            <kbd className="kbd">K</kbd>
           </span>
         </button>
       </div>
@@ -78,21 +76,21 @@ export default function Sidebar({ open, appName, threads, activeId, onSelect, on
       <div className="px-3 pb-2">
         <label className="relative block">
           <span className="sr-only">Search history</span>
-          <Search size={15} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-pen-mist" />
+          <Search size={15} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-fg-muted" />
           <input
             type="search"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             placeholder="Search history"
-            className="w-full rounded-sheet border-transparent bg-white/10 py-2 pl-8 pr-3 text-sm text-paper-white placeholder:text-pen-mist focus:border-white/40 focus:bg-white/15 focus:ring-0"
+            className={`${field} py-2 pl-8 pr-3 text-sm`}
           />
         </label>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-2 pb-2" aria-label="Recent questions">
-        <h2 className="mb-1 mt-2 px-2 text-2xs font-bold text-pen-mist">Recent</h2>
+        <h2 className="mb-1 mt-3 px-2 text-2xs font-semibold text-fg-muted">Recent</h2>
         {filtered.length === 0 ? (
-          <p className="px-2 py-4 text-sm text-pen-mist">{filter ? 'No matching questions.' : 'Questions you ask are saved here.'}</p>
+          <p className="px-2 py-4 text-sm text-fg-muted">{filter ? 'No matching questions.' : 'Questions you ask are saved here.'}</p>
         ) : (
           <ul className="space-y-0.5">
             {filtered.map((t) => {
@@ -110,23 +108,23 @@ export default function Sidebar({ open, appName, threads, activeId, onSelect, on
                           if (e.key === 'Escape') setEditing(null)
                         }}
                         aria-label="Question title"
-                        className="min-w-0 flex-1 rounded-[4px] border-transparent bg-paper-white px-2 py-1 text-xs text-ink focus:ring-0"
+                        className={`${field} min-w-0 flex-1 px-2 py-1 text-xs`}
                       />
-                      <button type="button" onClick={() => save(t.id)} aria-label="Save title" className="rounded p-1 hover:bg-white/15">
+                      <button type="button" onClick={() => save(t.id)} aria-label="Save title" className={btn.iconSm}>
                         <Check size={15} />
                       </button>
-                      <button type="button" onClick={() => setEditing(null)} aria-label="Cancel renaming" className="rounded p-1 hover:bg-white/15">
+                      <button type="button" onClick={() => setEditing(null)} aria-label="Cancel renaming" className={btn.iconSm}>
                         <X size={15} />
                       </button>
                     </div>
                   ) : (
-                    <div className={`group flex items-center rounded-sheet ${active ? 'bg-white/[0.16]' : 'hover:bg-white/[0.08]'}`}>
+                    <div className={`group flex items-center rounded-lg ${active ? 'bg-fg/[0.07]' : 'hover:bg-fg/[0.04]'}`}>
                       <button
                         type="button"
                         onClick={() => onSelect(t.id)}
                         aria-current={active ? 'page' : undefined}
                         title={t.title}
-                        className={`min-w-0 flex-1 px-2 py-2 text-left text-sm leading-snug ${active ? 'font-bold text-paper-white' : 'text-[#E3E9FF]'}`}
+                        className={`min-w-0 flex-1 rounded-lg px-2 py-2 text-left text-sm leading-snug ${active ? 'font-semibold text-fg' : 'text-fg-soft hover:text-fg'}`}
                       >
                         {/* Clamp on the inner span: overflow clips at the padding box, so a clamp on the padded button leaks a third line. */}
                         <span className="line-clamp-2 break-words">{t.title}</span>
@@ -139,7 +137,7 @@ export default function Sidebar({ open, appName, threads, activeId, onSelect, on
                         }}
                         aria-label={`Options for ${t.title}`}
                         aria-expanded={menuFor === t.id}
-                        className={`mr-1 rounded-[4px] p-1 text-pen-mist hover:bg-white/15 hover:text-paper-white ${
+                        className={`mr-1 rounded-md p-1 text-fg-muted hover:bg-fg/[0.06] hover:text-fg ${
                           active || menuFor === t.id ? 'opacity-100' : 'opacity-0 focus:opacity-100 group-hover:opacity-100'
                         }`}
                       >
@@ -148,7 +146,7 @@ export default function Sidebar({ open, appName, threads, activeId, onSelect, on
                     </div>
                   )}
                   {menuFor === t.id && (
-                    <div role="menu" className="absolute right-1 top-9 z-50 w-40 rounded-sheet border border-rule bg-paper-white py-1 text-ink shadow-pop">
+                    <div role="menu" className={`absolute right-1 top-9 z-50 w-40 ${menu}`}>
                       <button
                         type="button"
                         role="menuitem"
@@ -157,7 +155,7 @@ export default function Sidebar({ open, appName, threads, activeId, onSelect, on
                           setEditValue(t.title)
                           setMenuFor(null)
                         }}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-paper-shade"
+                        className={menuItem}
                       >
                         <Pencil size={14} /> Rename
                       </button>
@@ -168,7 +166,7 @@ export default function Sidebar({ open, appName, threads, activeId, onSelect, on
                           setMenuFor(null)
                           onDelete(t.id)
                         }}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-sm text-alert hover:bg-alert-tint"
+                        className={menuItemDanger}
                       >
                         <Trash2 size={14} /> Delete
                       </button>
@@ -181,11 +179,11 @@ export default function Sidebar({ open, appName, threads, activeId, onSelect, on
         )}
       </nav>
 
-      <div className="border-t border-white/15 px-4 py-3 text-2xs leading-relaxed text-[#D5DEFF]">
+      <div className="border-t border-line px-4 py-3 text-2xs leading-relaxed text-fg-muted">
         {enabled && user && (
           <div className="mb-2 flex items-center justify-between gap-2">
-            <span className="truncate text-xs font-bold text-paper-white">{user.email || user.name}</span>
-            <button type="button" onClick={logout} aria-label="Sign out" className="rounded p-1 hover:bg-white/15">
+            <span className="truncate text-xs font-semibold text-fg">{user.email || user.name}</span>
+            <button type="button" onClick={logout} aria-label="Sign out" className={btn.iconSm}>
               <LogOut size={14} />
             </button>
           </div>

@@ -9,7 +9,7 @@ export function printDate(d) {
   return `${p.weekday} ${p.day} ${p.month} ${p.year}`
 }
 
-// The printout's running header: the date and answer time of the question being read,
+// The thread's running header: the date and answer time of the question being read,
 // held at the top of the thread while it scrolls. The meta strip under each question
 // leaves them out, so nothing is stated twice.
 export default function RunningHead({ turns, scroller, frame }) {
@@ -49,13 +49,13 @@ export default function RunningHead({ turns, scroller, frame }) {
   const when = turn.answeredAt || turn.askedAt
 
   return (
-    <div className="sticky top-0 z-20 bg-paper">
+    <div className="sticky top-0 z-20 bg-canvas">
       <div className={frame}>
-        <div className="flex h-9 items-center justify-between gap-4 border-b border-rule text-xs text-ink-muted tnum">
+        <div className="flex h-9 items-center justify-between gap-4 border-b border-line text-xs text-fg-muted tnum">
           <p className="min-w-0 truncate">
             {when && (
               <time dateTime={when.toISOString()}>
-                <span className="font-bold text-ink-soft">{printDate(when)}</span>
+                <span className="font-semibold text-fg-soft">{printDate(when)}</span>
                 {turn.answeredAt && ` · ${CLOCK.format(turn.answeredAt)}`}
               </time>
             )}
