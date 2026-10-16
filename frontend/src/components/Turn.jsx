@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AlertTriangle, Check, Copy, CornerDownRight, ImageIcon, Loader2, Telescope, Zap } from 'lucide-react'
+import { answerClipboard, selectionClipboard, writeClipboard } from '../copyAnswer.js'
 import { TurnContext, WIDE_QUERY, citationOrder, useMedia } from '../turnContext.js'
 import AnswerBody from './AnswerBody.jsx'
 import EvidenceMargin from './EvidenceMargin.jsx'
@@ -70,6 +71,7 @@ export default function Turn({ turn, onFollowUp, busy }) {
   const [pinned, setPinned] = useState(null)
   const [sheet, setSheet] = useState(null) // { n, returnTo }
   const [copied, setCopied] = useState(false)
+  const answerRef = useRef(null)
   // Saved threads arrive finished; only an answer written in front of the reader gets the
   // completion sweep, and not when it was stopped, failed or motion is reduced.
   const live = useRef(!turn.done)
@@ -103,15 +105,26 @@ export default function Turn({ turn, onFollowUp, busy }) {
     [turn.id, byNumber, active, togglePin, openSheet, wide, finale, endFinale],
   )
 
+  // Citations and references are links in the copy, so they stay clickable in Word or email.
   const copy = async () => {
-    const refs = order.map((n) => `[${n}] ${byNumber.get(n).reference}`).join('\n')
     try {
-      await navigator.clipboard.writeText(`${turn.question}\n\n${turn.text}\n\nReferences\n${refs}`)
+      await writeClipboard(answerClipboard({ question: turn.question, root: answerRef.current, byNumber, order }))
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     } catch {
       /* clipboard blocked */
     }
+  }
+
+  // Selecting part of the answer and copying keeps its citation keys as "[n]" source links.
+  const copySelection = (e) => {
+    const selection = window.getSelection()
+    if (!selection?.rangeCount || selection.isCollapsed) return
+    const clip = selectionClipboard(selection.getRangeAt(0).cloneContents(), byNumber)
+    if (!clip) return
+    e.clipboardData.setData('text/html', clip.html)
+    e.clipboardData.setData('text/plain', clip.text)
+    e.preventDefault()
   }
 
   const sheetIndex = sheet ? order.indexOf(sheet.n) : -1
@@ -170,7 +183,11 @@ export default function Turn({ turn, onFollowUp, busy }) {
 
           {waiting && <Progress status={turn.status} mode={turn.mode} />}
 
-          {turn.text && <AnswerBody text={turn.text} streaming={streaming} />}
+          {turn.text && (
+            <div ref={answerRef} onCopy={copySelection}>
+              <AnswerBody text={turn.text} streaming={streaming} />
+            </div>
+          )}
 
           {turn.error && (
             <div role="alert" className="mt-2 flex max-w-measure items-start gap-2.5 rounded-sheet bg-alert-tint px-3.5 py-3 text-sm text-alert">

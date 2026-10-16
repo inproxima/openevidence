@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Check, Copy, ExternalLink, FileText } from 'lucide-react'
+import { referenceHtml, referenceText, writeClipboard } from '../copyAnswer.js'
 import { useTurn } from '../turnContext.js'
 import EvidenceBadge, { CanadaMark } from './EvidenceBadge.jsx'
 
@@ -63,7 +64,7 @@ export default function SourceCard({ source, cited = true, focus = false }) {
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(source.reference)
+      await writeClipboard({ html: referenceHtml(source), text: referenceText(source) })
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     } catch {
