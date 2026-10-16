@@ -13,6 +13,9 @@ __pycache__/
 data/
 *.db
 
+# third-party screenshots (OpenEvidence UI and licensed answer text): local reference only
+docs/rea-screenshots/
+
 # frontend
 frontend/node_modules/
 frontend/dist/

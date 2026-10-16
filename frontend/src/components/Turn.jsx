@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { AlertTriangle, Check, Copy, CornerDownRight, ImageIcon, Loader2, Telescope, Zap } from 'lucide-react'
 import { TurnContext, WIDE_QUERY, citationOrder, useMedia } from '../turnContext.js'
 import AnswerBody from './AnswerBody.jsx'
@@ -14,9 +14,6 @@ const STAGES = [
 ]
 // Answer column on the shared 600px edge; the margin takes the slack (shared with App's composer row).
 export const TURN_COLUMNS = 'xl:grid xl:grid-cols-[minmax(0,37.5rem)_minmax(320px,1fr)] xl:gap-x-12'
-
-const STAMP = new Intl.DateTimeFormat('en-CA', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })
-const stamp = (d) => STAMP.format(d)
 
 const COUNT_LABELS = {
   pubmed: 'PubMed',
@@ -73,6 +70,18 @@ export default function Turn({ turn, onFollowUp, busy }) {
   const [pinned, setPinned] = useState(null)
   const [sheet, setSheet] = useState(null) // { n, returnTo }
   const [copied, setCopied] = useState(false)
+  // Saved threads arrive finished; only an answer written in front of the reader gets the
+  // completion sweep, and not when it was stopped, failed or motion is reduced.
+  const live = useRef(!turn.done)
+  const [finale, setFinale] = useState(false)
+  const endFinale = useCallback(() => setFinale(false), [])
+  useEffect(() => {
+    if (!turn.done || !live.current) return
+    live.current = false
+    if (turn.error || turn.stopped || !turn.text) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    setFinale(true)
+  }, [turn.done, turn.error, turn.stopped, turn.text])
 
   const byNumber = useMemo(() => new Map(turn.sources.map((s) => [s.n, s])), [turn.sources])
   const order = useMemo(() => citationOrder(turn.text).filter((n) => byNumber.has(n)), [turn.text, byNumber])
@@ -90,8 +99,8 @@ export default function Turn({ turn, onFollowUp, busy }) {
 
   const active = sheet?.n ?? hover ?? pinned
   const ctx = useMemo(
-    () => ({ turnId: turn.id, byNumber, active, setHover, togglePin, openSheet, wide }),
-    [turn.id, byNumber, active, togglePin, openSheet, wide],
+    () => ({ turnId: turn.id, byNumber, active, setHover, togglePin, openSheet, wide, finale, endFinale }),
+    [turn.id, byNumber, active, togglePin, openSheet, wide, finale, endFinale],
   )
 
   const copy = async () => {
@@ -111,45 +120,49 @@ export default function Turn({ turn, onFollowUp, busy }) {
 
   return (
     <TurnContext.Provider value={ctx}>
-      <article className={`animate-rise ${TURN_COLUMNS}`}>
+      <article data-turn className={`animate-rise ${TURN_COLUMNS}`}>
         <div className="min-w-0">
           <header className="mb-6 max-w-measure border-b border-ink pb-4">
             <h2 className="text-lg font-bold leading-snug sm:text-title">{turn.question}</h2>
-            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-muted tnum">
-              <span className="inline-flex items-center gap-1 font-bold text-ink-soft">
-                {turn.mode === 'deep' ? <Telescope size={13} /> : <Zap size={13} />}
-                {turn.mode === 'deep' ? 'Deep' : 'Quick'}
-              </span>
-              {turn.answeredAt && (
-                <time dateTime={turn.answeredAt.toISOString()}>
-                  {stamp(turn.answeredAt)}
-                  {turn.seconds ? ` · ${turn.seconds} s` : ''}
-                </time>
-              )}
-              {/* The counts live in the margin header on wide screens; here, below it, they open the sources. */}
-              {!wide && order.length > 0 && (
-                <button
-                  type="button"
-                  onClick={(e) => openSheet(order[0], e.currentTarget)}
-                  className="inline-flex min-h-[28px] items-center font-bold text-pen underline decoration-pen-mist underline-offset-4 hover:decoration-pen"
-                >
-                  {counts}
-                </button>
-              )}
-              {!wide && order.length === 0 && turn.sources.length > 0 && <span>{counts}</span>}
-              {turn.hadImage && (
-                <span className="inline-flex items-center gap-1">
-                  <ImageIcon size={13} /> Image attached
+            {/* Date and answer time sit in the thread's running header, so they are not repeated here. */}
+            <div className="mt-2 flex items-start gap-3 text-xs text-ink-muted tnum">
+              <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1">
+                <span className="inline-flex min-h-[28px] items-center gap-1 font-bold text-ink-soft">
+                  {turn.mode === 'deep' ? <Telescope size={13} /> : <Zap size={13} />}
+                  {turn.mode === 'deep' ? 'Deep' : 'Quick'}
                 </span>
-              )}
+                {/* The counts live in the margin header on wide screens; here, below it, they open the sources. */}
+                {!wide && order.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={(e) => openSheet(order[0], e.currentTarget)}
+                    className="inline-flex min-h-[28px] items-center font-bold text-pen underline decoration-pen-mist underline-offset-4 hover:decoration-pen"
+                  >
+                    {counts}
+                  </button>
+                )}
+                {!wide && order.length === 0 && turn.sources.length > 0 && <span>{counts}</span>}
+                {turn.hadImage && (
+                  <span className="inline-flex items-center gap-1">
+                    <ImageIcon size={13} /> Image attached
+                  </span>
+                )}
+              </div>
+              {/* Pinned to the first line's right edge; the facts beside it wrap instead. */}
               {turn.done && turn.text && (
                 <button
                   type="button"
                   onClick={copy}
-                  className="ml-auto inline-flex min-h-[28px] items-center gap-1 font-bold text-pen hover:underline"
+                  className="inline-flex min-h-[28px] shrink-0 items-center gap-1 font-bold text-pen hover:underline"
                 >
                   {copied ? <Check size={13} /> : <Copy size={13} />}
-                  {copied ? 'Copied' : 'Copy with references'}
+                  {copied ? (
+                    'Copied'
+                  ) : (
+                    <span>
+                      Copy<span className="sr-only sm:not-sr-only"> with references</span>
+                    </span>
+                  )}
                 </button>
               )}
             </div>

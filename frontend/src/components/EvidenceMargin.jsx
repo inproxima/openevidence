@@ -15,7 +15,7 @@ export default function EvidenceMargin({ sources, order, done, wide }) {
   return (
     <section
       aria-label="Evidence"
-      className={wide ? 'sticky top-6 max-h-[calc(100dvh-13rem)] overflow-y-auto overscroll-contain border-l border-rule pb-6 pl-5 pr-1' : 'mt-8'}
+      className={wide ? 'sticky top-[3.75rem] max-h-[calc(100dvh-15.25rem)] overflow-y-auto overscroll-contain border-l border-rule pb-6 pl-5 pr-1' : 'mt-8'}
     >
       <header className="mb-3 flex items-baseline justify-between gap-3 border-b border-ink pb-2">
         <h3 className="text-sm font-bold">Evidence</h3>

@@ -10,6 +10,8 @@ export const TurnContext = createContext({
   togglePin: () => {},
   openSheet: () => {},
   wide: false,
+  finale: false, // a live answer just finished: sweep its bottom line once
+  endFinale: () => {},
 })
 
 export const useTurn = () => useContext(TurnContext)

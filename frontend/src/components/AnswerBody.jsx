@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeClaims from '../rehypeClaims.js'
@@ -9,10 +9,36 @@ import CiteKey from './CiteKey.jsx'
 const CITE = /\[(\d{1,3})\](?!\()/g
 const withCitationLinks = (text) => text.replace(CITE, (_, n) => `[${n}](#cite-${n})`)
 
-function Claim({ cites, children }) {
-  const { active } = useTurn()
+function Claim({ cites, lead, children }) {
+  const { active, finale, endFinale } = useTurn()
+  const ref = useRef(null)
+  const [sweeping, setSweeping] = useState(false)
   const lit = active !== null && cites.includes(active)
-  return <span className={`claim${lit ? ' is-lit' : ''}`}>{children}</span>
+
+  // Completion moment: when a live answer finishes, the highlighter crosses its bottom line
+  // once, but only if the reader can see that line right then.
+  useEffect(() => {
+    if (!lead || !finale) return
+    const io = new IntersectionObserver(([entry]) => {
+      io.disconnect()
+      if (entry.intersectionRatio >= 0.5) setSweeping(true)
+      else endFinale()
+    }, { threshold: [0, 0.5, 1] })
+    io.observe(ref.current)
+    return () => io.disconnect()
+  }, [lead, finale, endFinale])
+
+  const settle = (e) => {
+    if (e.target !== e.currentTarget) return
+    setSweeping(false)
+    endFinale()
+  }
+
+  return (
+    <span ref={ref} onAnimationEnd={settle} className={`claim${lit ? ' is-lit' : ''}${sweeping ? ' is-sweeping' : ''}`}>
+      {children}
+    </span>
+  )
 }
 
 const components = {
@@ -28,7 +54,12 @@ const components = {
   span: ({ node, children, ...rest }) => {
     const cites = rest['data-cites'] ?? node?.properties?.dataCites
     if (cites !== undefined) {
-      return <Claim cites={String(cites).split(' ').map(Number)}>{children}</Claim>
+      const lead = (rest['data-lead'] ?? node?.properties?.dataLead) !== undefined
+      return (
+        <Claim cites={String(cites).split(' ').map(Number)} lead={lead}>
+          {children}
+        </Claim>
+      )
     }
     return <span {...rest}>{children}</span>
   },

@@ -182,7 +182,7 @@ Near-neutral paper and ink, a single saturated blue, and a set of highlighter in
 **Character:** A journal serif for what the evidence says, and a legibility-first grotesque for everything the reader operates. Both faces are self-hosted variable fonts.
 
 ### Hierarchy
-- **Display** (700, 2.625rem/3rem): the home heading "Ask a clinical question" only.
+- **Display** (700, 2.625rem/3rem): the home heading "Ask a clinical question" only. It drops to the Headline size on phones.
 - **Headline** (700, 1.875rem/2.3rem): the question as the printout title. It drops to the Title size on phones and is balanced.
 - **Title** (700, 1.3125rem/1.75rem): the phone question title, and the source title inside the focused source sheet.
 - **Reading** (400, 1.09375rem/1.75rem, STIX Two Text, lining tabular numerals): answer prose, held to the 37.5rem measure (about 68ch). Headings inside an answer switch to Atkinson Hyperlegible Next at 700 and the Body size with 0.01em tracking, so they read as section labels within the printout.
@@ -201,11 +201,13 @@ Near-neutral paper and ink, a single saturated blue, and a set of highlighter in
 
 The app is a fixed-height two-pane shell. A 272px ballpoint-blue history rail sits on the left from 1024px up; below that it becomes an off-canvas drawer behind a 48px blue top bar. The content frame is centred at a maximum of 1180px, padded 16px on phones, 32px from 640px and 40px from 1280px.
 
-From 1280px a turn is a two-column grid: the answer column at 37.5rem, then a 48px gutter, then the evidence margin (at least 320px) taking all remaining width. The margin is sticky at 24px from the top and scrolls internally. Below 1280px the evidence list follows the answer in the single column, and the counts move into the meta strip as a button that opens the source sheet.
+From 1280px a turn is a two-column grid: the answer column at 37.5rem, then a 48px gutter, then the evidence margin (at least 320px) taking all remaining width. The margin is sticky 24px below the running header (60px from the top) and scrolls internally. Below 1280px the evidence list follows the answer in the single column, and the counts move into the meta strip as a button that opens the source sheet.
 
-The question rule, the answer, related questions and the composer all end on one right edge. The composer is pinned at the bottom in the same column grid, so it lines up with the answer and never spans the margin. Turns in a thread are separated by 64px. The home page uses a narrower 760px frame, with a top offset of 9vh on phones and 13vh from 640px.
+The question rule, the answer, related questions and the composer all end on one right edge. The composer is pinned at the bottom in the same column grid, so it lines up with the answer and never spans the margin. Turns in a thread are separated by 64px, under a sticky running header.
 
-**The One Edge Rule.** Anything belonging to the answer column stops at 37.5rem. When there is extra width, the evidence margin absorbs it.
+The home page is a cover sheet in the same frame and the same column grid: a ruled title block spans the frame, the composer and the example questions sit in the answer column, and the key to sources sits where the evidence margin will be (below the examples under 1280px). Asking a question therefore never moves the composer sideways.
+
+**The One Edge Rule.** Anything belonging to the answer column stops at 37.5rem. When there is extra width, the evidence margin absorbs it. Page furniture (the cover sheet's title block and the running header) spans the whole frame.
 
 ## Elevation & Depth
 
@@ -258,6 +260,8 @@ A numbered round key placed inline after the claim it supports. Idle, it has a B
 ### Highlighter Sweep (signature)
 Each claim a source supports is wrapped as one unit. Its highlight is a background gradient angled at 176 degrees, from transparent to yellow and back to transparent, sized from 0% to 100% width over 460ms on the `cubic-bezier(0.16, 1, 0.3, 1)` curve. Because the background is sliced per line fragment, the stroke travels through a sentence line by line. It is triggered by hover, focus, pin or an open sheet, and it lights the matching margin card at the same time. Reduced motion collapses the sweep to an instant state change.
 
+**Completion sweep (the one authored moment).** When an answer finishes streaming in front of the reader, one slower stroke crosses its bottom line (the first claim in the answer) over about 900ms on `cubic-bezier(0.33, 1, 0.68, 1)`, holds, then fades from yellow back to paper (2.6s in all). The ink colour fades, not the words, so the claim never changes weight. It does not light a key or card, plays only if that claim is on screen at completion, and never plays for saved threads, stopped or failed answers, or under reduced motion. No other entrance or celebration motion may be added alongside it.
+
 ### Evidence Margin
 A sticky column with a hairline left rule. Its header is "Evidence" over an ink rule, with "n cited · N reviewed" shown once at the right. Cited cards are listed in the order the answer first cites them, each with a 26px round key hanging 13px into the gutter. A disclosure ("n reviewed, not cited") reveals the remaining sources.
 
@@ -265,7 +269,13 @@ A sticky column with a hairline left rule. Its header is "Evidence" over an ink 
 A bottom sheet on Copy Paper with a top ink rule, 14px top corners, the Sheet shadow, a grab handle and a 360ms rise. Its header keeps a yellow key and "n of N cited" in view, with previous, next and close icon buttons. The card inside drops its hanging key and sets its finding at Reading size.
 
 ### Meta Strip
-Under the question: mode (bold, with an icon), the timestamp and duration in tabular numerals, and the counts on narrow screens. "Copy with references" is pushed to the right edge. All of it is Label size in Muted Ink.
+Under the question: mode (bold, with an icon), the counts on narrow screens, and the image note. The date and answer time are in the running header, not here. "Copy with references" is pinned to the right of the first line while the facts beside it wrap, and it reads "Copy" below 640px (the full name stays for screen readers). All of it is Label size in Muted Ink.
+
+### Running Header
+A printout's running header, sticky at the top of the thread: 36px tall over a hairline, spanning the frame. It gives the date ("Thu 15 Oct 2026", bold Soft Ink), answer time and duration (when known) of the question currently under it, all in tabular numerals, plus "Question n of N" at the right when the thread has more than one. Label size in Muted Ink on Copy Paper.
+
+### Cover Sheet (home)
+A ruled title block: an ink rule, the Display heading with today's date at its right, a Reading-size standfirst, then a row of three fields (Quick, Deep, Searches) between a hairline and an ink rule, with a bold label column and Muted Ink values. Below it come the composer, then "Example questions" as a numbered contents list (bold blue tabular numerals, an ink rule above, hairline rows, a trailing arrow). The "Key to sources" pairs a specimen citation key, the five evidence badges and the Canada mark with their meanings. There is no label above any heading.
 
 ## Do's and Don'ts
 

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { CornerDownRight, Menu, Plus } from 'lucide-react'
+import { ArrowRight, Menu, Plus } from 'lucide-react'
 import { api, streamAsk } from './api.js'
 import { useAuth } from './auth.jsx'
 import Composer from './components/Composer.jsx'
 import EvidenceBadge, { CanadaMark, LEVELS } from './components/EvidenceBadge.jsx'
+import RunningHead, { printDate } from './components/RunningHead.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import Turn, { TURN_COLUMNS } from './components/Turn.jsx'
 
@@ -14,6 +15,14 @@ const EXAMPLES = [
   'Is aspirin recommended for preeclampsia prevention, and at what dose?',
 ]
 
+// The cover sheet's title-block fields (the same facts as the mode tooltips and search status).
+const SHEET_FIELDS = [
+  ['Quick', 'The top sources, in about 30 seconds'],
+  ['Deep', 'A wider search and a structured evidence report, in about 2 minutes'],
+  ['Searches', 'Canadian guidelines, Health Canada monographs, PubMed, Europe PMC and ClinicalTrials.gov'],
+]
+const KEY_LEVELS = ['Guideline', 'Systematic review', 'RCT', 'Health Canada', 'Observational']
+
 let turnCounter = 0
 const newTurnId = () => `t${Date.now().toString(36)}${(turnCounter++).toString(36)}`
 
@@ -22,7 +31,17 @@ function turnsFromMessages(messages) {
   const turns = []
   for (const m of messages) {
     if (m.role === 'user') {
-      turns.push({ id: m.id, question: m.content, mode: m.mode, hadImage: m.had_image, text: '', sources: [], followups: [], done: false })
+      turns.push({
+        id: m.id,
+        question: m.content,
+        mode: m.mode,
+        hadImage: m.had_image,
+        askedAt: m.created_at ? new Date(m.created_at) : null,
+        text: '',
+        sources: [],
+        followups: [],
+        done: false,
+      })
     } else if (turns.length) {
       Object.assign(turns[turns.length - 1], {
         text: m.content,
@@ -49,6 +68,7 @@ export default function App() {
   const [error, setError] = useState('')
   const abortRef = useRef(null)
   const bottomRef = useRef(null)
+  const scrollerRef = useRef(null)
   const threadIdRef = useRef(null)
   threadIdRef.current = threadId
 
@@ -93,7 +113,7 @@ export default function App() {
     const id = newTurnId()
     setTurns((prev) => [
       ...prev,
-      { id, question, mode, hadImage: Boolean(image), text: '', sources: [], followups: [], status: null, done: false },
+      { id, question, mode, hadImage: Boolean(image), text: '', sources: [], followups: [], status: null, done: false, askedAt: new Date() },
     ])
     setBusy(true)
     const started = Date.now()
@@ -119,7 +139,7 @@ export default function App() {
         controller.signal,
       )
     } catch (err) {
-      if (err.name === 'AbortError') updateTurn(id, (t) => ({ done: true, text: t.text || '', error: t.text ? null : 'Stopped.' }))
+      if (err.name === 'AbortError') updateTurn(id, (t) => ({ done: true, stopped: true, text: t.text || '', error: t.text ? null : 'Stopped.' }))
       else updateTurn(id, { error: `Connection problem: ${err.message}` })
     } finally {
       setBusy(false)
@@ -208,6 +228,7 @@ export default function App() {
   }
 
   const empty = turns.length === 0
+  const today = new Date()
   // Same columns as a turn, so the composer lines up with the answer and the margin stays clear.
   const frame = 'mx-auto w-full max-w-[1180px] px-4 sm:px-8 xl:px-10'
 
@@ -252,69 +273,112 @@ export default function App() {
 
         {empty ? (
           <div className="flex-1 overflow-y-auto">
-            <div className="mx-auto w-full max-w-[760px] px-4 pb-16 pt-[9vh] sm:px-8 sm:pt-[13vh]">
-              <h1 className="text-[2rem] font-bold leading-tight sm:text-display">Ask a clinical question</h1>
-              <p className="mt-3 max-w-[56ch] text-read text-ink-soft">
-                Every claim in the answer is marked with the source that supports it, from Canadian guidelines, Health
-                Canada monographs and the medical literature.
-              </p>
-              <div className="mt-7">
-                <Composer
-                  onSubmit={ask}
-                  onStop={stop}
-                  busy={busy}
-                  mode={mode}
-                  setMode={setMode}
-                  placeholder="Anticoagulation for AF in a 78-year-old with CKD stage 4?"
-                  autoFocus
-                />
-                <p className="mt-2 text-2xs text-ink-muted">Not a substitute for clinical judgement. Don't enter patient identifiers.</p>
-              </div>
+            {/* The cover sheet: a ruled title block across the page, then the composer and the
+                contents on the answer column's edge, with the key where the evidence margin will be. */}
+            <div className={`${frame} pb-16 pt-6 sm:pt-10 xl:pt-14`}>
+              <header className="border-t border-ink">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 pt-4">
+                  <h1 className="text-title font-bold sm:text-display">Ask a clinical question</h1>
+                  <time dateTime={today.toLocaleDateString('en-CA')} className="text-xs font-bold text-ink-soft tnum">
+                    {printDate(today)}
+                  </time>
+                </div>
+                <p className="mt-3 max-w-[56ch] text-read text-ink-soft">Every claim in the answer is marked with the source that supports it.</p>
+                <dl className="mt-5 grid border-b border-t border-b-ink border-t-rule text-xs xl:grid-cols-3">
+                  {SHEET_FIELDS.map(([term, detail]) => (
+                    <div
+                      key={term}
+                      className="grid grid-cols-[4.5rem_minmax(0,1fr)] gap-x-3 border-rule py-2.5 [&:not(:first-child)]:border-t xl:[&:not(:first-child)]:border-l xl:[&:not(:first-child)]:border-t-0 xl:[&:not(:first-child)]:pl-4 xl:[&:not(:last-child)]:pr-4"
+                    >
+                      <dt className="font-bold text-ink">{term}</dt>
+                      <dd className="text-pretty text-ink-muted">{detail}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </header>
 
-              <div className="mt-12 grid gap-10 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
-                <section>
-                  <h2 className="text-sm font-bold">Example questions</h2>
-                  <ul className="mt-2 border-t border-ink">
-                    {EXAMPLES.map((q) => (
-                      <li key={q} className="border-b border-rule">
-                        <button
-                          type="button"
-                          onClick={() => ask({ question: q, image: null })}
-                          className="flex w-full items-start gap-2.5 py-3 text-left text-sm text-ink hover:text-pen"
+              <div className={`mt-8 sm:mt-10 ${TURN_COLUMNS}`}>
+                <div className="min-w-0 max-w-measure">
+                  <Composer
+                    onSubmit={ask}
+                    onStop={stop}
+                    busy={busy}
+                    mode={mode}
+                    setMode={setMode}
+                    placeholder="Anticoagulation for AF in a 78-year-old with CKD stage 4?"
+                    autoFocus
+                  />
+                  <p className="mt-2 text-2xs text-ink-muted">Not a substitute for clinical judgement. Don't enter patient identifiers.</p>
+
+                  <section aria-labelledby="examples-heading" className="mt-10">
+                    <h2 id="examples-heading" className="text-sm font-bold">
+                      Example questions
+                    </h2>
+                    <ol className="mt-2 border-t border-ink">
+                      {EXAMPLES.map((q, i) => (
+                        <li key={q} className="border-b border-rule">
+                          <button
+                            type="button"
+                            onClick={() => ask({ question: q, image: null })}
+                            className="group flex w-full items-start gap-3 py-3 text-left text-sm text-ink hover:text-pen"
+                          >
+                            <span aria-hidden="true" className="w-4 shrink-0 text-right font-bold text-pen tnum">
+                              {i + 1}
+                            </span>
+                            <span className="min-w-0 flex-1">{q}</span>
+                            <ArrowRight
+                              size={15}
+                              aria-hidden="true"
+                              className="mt-0.5 shrink-0 text-ink-faint transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:text-pen"
+                            />
+                          </button>
+                        </li>
+                      ))}
+                    </ol>
+                  </section>
+                </div>
+
+                <section aria-labelledby="key-heading" className="mt-10 max-w-measure xl:mt-0 xl:max-w-none xl:border-l xl:border-rule xl:pl-5">
+                  <h2 id="key-heading" className="border-b border-ink pb-2 text-sm font-bold">
+                    Key to sources
+                  </h2>
+                  <dl className="mt-3 space-y-2.5 text-pretty text-xs text-ink-soft">
+                    <div className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-x-3">
+                      <dt>
+                        <span
+                          aria-hidden="true"
+                          className="inline-flex h-5 min-w-5 items-center justify-center rounded-key border border-pen bg-paper-white px-1 text-2xs font-bold text-pen tnum"
                         >
-                          <CornerDownRight size={15} className="mt-0.5 shrink-0 text-pen" />
-                          {q}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-                <section>
-                  <h2 className="text-sm font-bold">How sources are marked</h2>
-                  <ul className="mt-2 space-y-2.5 border-t border-ink pt-3">
-                    {['Guideline', 'Systematic review', 'RCT', 'Health Canada', 'Observational'].map((level) => (
-                      <li key={level} className="flex items-start gap-2.5 text-xs text-ink-soft">
-                        <span className="w-[8.5rem] shrink-0">
-                          <EvidenceBadge level={level} />
+                          1
                         </span>
-                        <span className="pt-0.5">{LEVELS[level].note}</span>
-                      </li>
+                        <span className="sr-only">Numbered key</span>
+                      </dt>
+                      <dd className="pt-0.5">A citation: hover or tap it to see the source and the words it supports</dd>
+                    </div>
+                    {KEY_LEVELS.map((level) => (
+                      <div key={level} className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-x-3">
+                        <dt>
+                          <EvidenceBadge level={level} />
+                        </dt>
+                        <dd className="pt-0.5">{LEVELS[level].note}</dd>
+                      </div>
                     ))}
-                    <li className="flex items-start gap-2.5 text-xs text-ink-soft">
-                      <span className="w-[8.5rem] shrink-0 pt-0.5 text-2xs">
+                    <div className="grid grid-cols-[7.5rem_minmax(0,1fr)] items-start gap-x-3">
+                      <dt className="pt-0.5 text-2xs">
                         <CanadaMark />
-                      </span>
-                      <span className="pt-0.5">Canadian source, shown in the byline</span>
-                    </li>
-                  </ul>
+                      </dt>
+                      <dd className="pt-0.5">Canadian source, shown in the byline</dd>
+                    </div>
+                  </dl>
                 </section>
               </div>
             </div>
           </div>
         ) : (
           <>
-            <div className="flex-1 overflow-y-auto">
-              <div className={`${frame} space-y-16 py-8 sm:py-10`}>
+            <div ref={scrollerRef} className="flex-1 overflow-y-auto">
+              <RunningHead turns={turns} scroller={scrollerRef} frame={frame} />
+              <div className={`${frame} space-y-16 pb-8 pt-6 sm:pb-10 sm:pt-8`}>
                 {turns.map((t) => (
                   <Turn key={t.id} turn={t} busy={busy} onFollowUp={(q) => ask({ question: q, image: null })} />
                 ))}

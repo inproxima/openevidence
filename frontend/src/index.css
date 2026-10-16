@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Registered so the completion sweep can fade the highlighter ink itself, not the words under it. */
+@property --hl {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #FFE24D;
+}
+
 @layer base {
   :root {
     --hl: theme('colors.hl.yellow');
@@ -148,6 +155,32 @@
   }
   .claim.is-lit {
     background-size: 100% 100%;
+  }
+
+  /* The one authored moment: as a live answer finishes, one slower stroke crosses its
+     bottom line, holds, then the ink settles back into the paper so yellow is free again
+     for the citation being read. Never on saved threads or under reduced motion. */
+  .claim.is-sweeping {
+    animation: claim-sweep 2600ms linear both;
+  }
+  @keyframes claim-sweep {
+    0% {
+      background-size: 0% 100%;
+      /* Gentler than the hover sweep's curve, so the stroke visibly travels line by line. */
+      animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    35% {
+      background-size: 100% 100%;
+    }
+    68% {
+      background-size: 100% 100%;
+      --hl: theme('colors.hl.yellow');
+      animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    100% {
+      background-size: 100% 100%;
+      --hl: rgb(255 226 77 / 0);
+    }
   }
 
   .stream-caret::after {

@@ -90,6 +90,18 @@ function walk(node) {
   if (node.type === 'element' && CONTAINERS.has(node.tagName)) node.children = wrap(node.children)
 }
 
+// The first claim in reading order is the bottom line; mark it for the completion sweep.
+function markLead(node) {
+  if (node.type === 'element' && node.properties?.dataCites !== undefined) {
+    node.properties.dataLead = ''
+    return true
+  }
+  return (node.children || []).some(markLead)
+}
+
 export default function rehypeClaims() {
-  return (tree) => walk(tree)
+  return (tree) => {
+    walk(tree)
+    markLead(tree)
+  }
 }
