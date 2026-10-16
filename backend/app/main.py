@@ -3,6 +3,7 @@
 Run locally:  uv run uvicorn app.main:app --app-dir backend --reload --port 8000
 """
 
+import asyncio
 import base64
 import json
 import logging
@@ -21,6 +22,7 @@ from .auth import current_user
 from .config import ROOT, get_settings
 from .db import Store
 from .llm import LLM
+from .ratelimit import RateLimiter
 from .schemas import AskRequest, ThreadPatch
 from .search import USER_AGENT
 
@@ -47,7 +49,9 @@ async def lifespan(app: FastAPI):
             llm = LLM(settings)
             if not settings.openai_api_key:
                 log.warning("OPENAI_API_KEY is not set; answers will fail until it is added to .env")
-        app.state.deps = pipeline.Deps(settings=settings, http=http, llm=llm, store=Store(settings.database_url))
+        store = Store(settings.database_url)
+        app.state.deps = pipeline.Deps(settings=settings, http=http, llm=llm, store=store)
+        app.state.limiter = RateLimiter(store.engine, settings)
         yield
 
 
@@ -97,6 +101,7 @@ def _check_image(image: str | None) -> None:
 @app.post("/api/ask")
 async def ask(req: AskRequest, user_id: str | None = Depends(current_user), d: pipeline.Deps = Depends(deps)):
     _check_image(req.image)
+    await asyncio.to_thread(app.state.limiter.check, user_id)  # 429 when over a limit
 
     async def events():
         async for event, data in pipeline.run(req, user_id, d):

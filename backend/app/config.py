@@ -38,6 +38,11 @@ class Settings(BaseSettings):
 
     cors_origins: str = "http://localhost:5173"
 
+    # /api/ask abuse protection (see ratelimit.py); 0 turns a limit off.
+    ask_limit_per_minute: int = 5  # per user
+    ask_limit_per_day: int = 50  # per user, rolling 24 h
+    ask_limit_global_per_day: int = 500  # all users together, rolling 24 h
+
     llm_mock: bool = False  # true = canned model output for UI testing without an OpenAI key
 
     @property

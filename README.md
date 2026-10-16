@@ -34,6 +34,79 @@ Tests: `uv run pytest`
 | Europe PMC, ClinicalTrials.gov, Health Canada DPD | — | Public APIs, no key. |
 | `AUTH0_*`, `VITE_AUTH0_*` | Deployment only | An Auth0 SPA application + API (audience). Blank = no login. |
 
+## Deploy to Render (testers)
+
+`render.yaml` is a Render Blueprint: one web service that builds the frontend and serves it
+with the API, plus a Postgres database for threads and the question log. About US$13/month
+(Starter web service $7 + Basic-256mb Postgres $6) plus OpenAI and SerpAPI usage. It runs in
+Oregon because Render has no Canadian region, so ask testers not to enter identifiable
+patient information.
+
+### 1. Auth0 (in sara's tenant)
+
+1. **API**: Applications → APIs → Create API. Name `Clinical Evidence CA`, identifier
+   `https://clinical-evidence-ca/api` (this is the audience; it never has to resolve), RS256.
+2. **Application**: Applications → Applications → Create Application → `Clinical Evidence CA`,
+   type *Single Page Web Applications*. On its Settings tab, put the same list in all three
+   fields, then save:
+
+   | Field | Value |
+   |---|---|
+   | Allowed Callback URLs | `https://clinical-evidence-ca.onrender.com, http://localhost:5173` |
+   | Allowed Logout URLs | `https://clinical-evidence-ca.onrender.com, http://localhost:5173` |
+   | Allowed Web Origins | `https://clinical-evidence-ca.onrender.com, http://localhost:5173` |
+
+   Copy the **Domain** (e.g. `your-tenant.us.auth0.com`, no `https://`) and **Client ID**.
+3. **Invite-only login**: Authentication → Database → Create DB Connection named
+   `clinical-evidence-testers`, and turn on **Disable Sign Ups**. On its Applications tab enable
+   only `Clinical Evidence CA`. Then on the application's **Connections** tab turn every other
+   connection off (sara's `Username-Password-Authentication`, Google…), so only invited
+   testers can sign in. sara's own login is unchanged.
+
+### 2. Create the services (once)
+
+Render dashboard → New → Blueprint → repository `inproxima/openevidence`. Render reads
+`render.yaml` and asks for the values it doesn't hold:
+
+| Variable | Value |
+|---|---|
+| `OPENAI_API_KEY`, `SERPAPI_API_KEY` | your keys |
+| `NCBI_API_KEY`, `NCBI_EMAIL` | optional, may be blank |
+| `AUTH0_DOMAIN`, `VITE_AUTH0_DOMAIN` | the Auth0 Domain |
+| `AUTH0_AUDIENCE`, `VITE_AUTH0_AUDIENCE` | `https://clinical-evidence-ca/api` |
+| `VITE_AUTH0_CLIENT_ID` | the Auth0 Client ID |
+| `CORS_ORIGINS` | `https://clinical-evidence-ca.onrender.com` |
+
+The first build takes a few minutes. If Render gives the service a different URL (it adds a
+suffix when the name is taken), use that URL in the three Auth0 fields and in `CORS_ORIGINS`.
+
+`VITE_AUTH0_*` are compiled into the frontend at build time, so changing one needs a rebuild
+(*Save, rebuild, and deploy* in the Environment tab). Login needs both halves: with
+`AUTH0_DOMAIN` set but the `VITE_AUTH0_*` missing from the build, every request fails with
+"Sign in required".
+
+### 3. Invite a tester
+
+Auth0 → User Management → Users → Create User: connection `clinical-evidence-testers`, the
+tester's email, any long random password (don't send it). Send the tester the app URL and ask
+them to choose **Log in → Forgot password?** with that email to set their own password. To
+remove someone, block or delete the user.
+
+### Redeploy
+
+Push to `main` and Render rebuilds and restarts the service (`uv sync`, `npm ci`,
+`npm run build`, then uvicorn). To redeploy without a push: service → Manual Deploy →
+Deploy latest commit. Saving environment changes also redeploys. Threads persist in
+Postgres across deploys; logs are under the service's Logs tab.
+
+### Abuse protection
+
+Every `/api/ask` needs a valid Auth0 token. Each tester may ask 5 questions a minute and 50
+in any 24 hours, and all testers together 500 in 24 hours. Past a limit the app answers
+HTTP 429 with a message saying when to try again. Change these with `ASK_LIMIT_PER_MINUTE`,
+`ASK_LIMIT_PER_DAY` and `ASK_LIMIT_GLOBAL_PER_DAY` in the Environment tab (0 = off). As a
+backstop, set a monthly budget on the OpenAI project and on the SerpAPI plan.
+
 ## How an answer is made
 
 1. **Guideline search starts at once,** restricted to Canadian guideline sites (Diabetes Canada,
@@ -81,6 +154,8 @@ backend/app/
   citations.py    [n] checking, Vancouver references
   db.py           threads/messages (SQLite locally, Postgres via DATABASE_URL)
   auth.py         Auth0 RS256 (off when AUTH0_DOMAIN is blank)
+  ratelimit.py    per-user and global question limits (ask_log table)
+render.yaml       Render Blueprint (web service + Postgres)
 frontend/src/     React 19 + Vite + Tailwind (components ported from sara)
 docs/             REA findings on openevidence.com (when captured)
 ```
