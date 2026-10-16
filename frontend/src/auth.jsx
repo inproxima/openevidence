@@ -8,6 +8,7 @@ const AuthContext = createContext({
   isAuthenticated: true,
   user: null,
   login: () => {},
+  signup: () => {},
   logout: () => {},
   getToken: async () => null,
 })
@@ -21,6 +22,8 @@ function Auth0Bridge({ children }) {
       isAuthenticated,
       user,
       login: () => loginWithRedirect(),
+      // Opens Auth0's sign-up screen (email + password, or Google) instead of the login one.
+      signup: () => loginWithRedirect({ authorizationParams: { screen_hint: 'signup' } }),
       logout: () => logout({ logoutParams: { returnTo: window.location.origin } }),
       getToken: () => getAccessTokenSilently(),
     }),

@@ -54,10 +54,14 @@ Auth0 dashboard:
    `ToZIB5peBiy7h8qWEWaM9BP7ucYjwhJ4`, grants Authorization Code + Refresh Token. Allowed
    Callback URLs, Allowed Logout URLs, Allowed Web Origins and Allowed Origins (CORS) all hold
    `https://clinical-evidence-ca.onrender.com, http://localhost:5173`.
-3. **Invite-only login**: database connection `clinical-evidence-testers` with *Disable Sign
-   Ups* on, enabled for this application only. On the application's Connections tab every other
-   connection (Google, sara's `Username-Password-Authentication`) is off, so only invited
-   testers can sign in. sara's apps are unaffected.
+3. **Login methods** (the application's Connections tab): **Google** (`google-oauth2`, shared
+   with sara and still on Auth0's developer keys) and the database connection
+   `clinical-evidence-testers`, which only this app uses and which allows sign-up. sara's
+   `Username-Password-Authentication` is off for this app and keeps its sign-ups disabled.
+
+   Before a wider launch, give `google-oauth2` your own Google OAuth client ID and secret. With
+   Auth0's developer keys, Auth0 shows a notice and can't silently renew sessions, so Google
+   users have to sign in again more often.
 
 If the public URL changes, update the four URL lists in the application and `CORS_ORIGINS`.
 
@@ -79,13 +83,15 @@ The first build takes a few minutes.
 halves: with `AUTH0_DOMAIN` set but the `VITE_AUTH0_*` missing from the build, every request
 fails with "Sign in required".
 
-### 3. Invite a tester
+### 3. Testers
 
-Auth0 dashboard (`honeybeelogic.ca.auth0.com`) → User Management → Users → Create User:
-connection `clinical-evidence-testers`, the tester's email, any long random password (don't
-send it). Send the tester the app URL and ask
-them to choose **Log in → Forgot password?** with that email to set their own password. To
-remove someone, block or delete the user.
+Send people the URL. On the sign-in screen they choose **Create an account** (email and
+password, or Continue with Google) or **Sign in**. To remove someone: Auth0 dashboard
+(`honeybeelogic.ca.auth0.com`) → User Management → Users → block or delete the user.
+
+To go back to invite-only, turn on *Disable Sign Ups* on `clinical-evidence-testers`, turn
+Google off on the application's Connections tab, and create accounts by hand (Users → Create
+User with any long random password, then the tester uses **Forgot password?** to set their own).
 
 ### Redeploy
 
@@ -99,8 +105,9 @@ Postgres across deploys; logs are under the service's Logs tab.
 Every `/api/ask` needs a valid Auth0 token. Each tester may ask 5 questions a minute and 50
 in any 24 hours, and all testers together 500 in 24 hours. Past a limit the app answers
 HTTP 429 with a message saying when to try again. Change these with `ASK_LIMIT_PER_MINUTE`,
-`ASK_LIMIT_PER_DAY` and `ASK_LIMIT_GLOBAL_PER_DAY` in the Environment tab (0 = off). As a
-backstop, set a monthly budget on the OpenAI project and on the SerpAPI plan.
+`ASK_LIMIT_PER_DAY` and `ASK_LIMIT_GLOBAL_PER_DAY` in the Environment tab (0 = off). Sign-up
+is open, so one person can make several accounts: the all-testers cap is what bounds the bill.
+As a backstop, set a monthly budget on the OpenAI project and on the SerpAPI plan.
 
 ## How an answer is made
 

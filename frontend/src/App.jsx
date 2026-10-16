@@ -195,9 +195,12 @@ export default function App() {
       <div className="flex min-h-screen items-center justify-center bg-pen px-4">
         <div className="w-full max-w-sm rounded-sheet border border-ink bg-paper p-8 shadow-pop">
           <h1 className="text-lg font-bold">{appName}</h1>
-          <p className="mt-2 text-sm text-ink-soft">This preview is open to invited clinicians. Sign in with the email your invitation was sent to.</p>
+          <p className="mt-2 text-sm text-ink-soft">An early preview for clinicians. Sign in with Google or your email, or create an account.</p>
           <button type="button" onClick={auth.login} className="mt-6 w-full rounded-sheet bg-pen py-2.5 text-sm font-bold text-paper-white hover:bg-pen-dark">
             Sign in
+          </button>
+          <button type="button" onClick={auth.signup} className="mt-3 w-full rounded-sheet border border-pen py-2.5 text-sm font-bold text-pen hover:bg-pen-wash">
+            Create an account
           </button>
         </div>
       </div>
