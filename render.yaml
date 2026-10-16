@@ -75,6 +75,8 @@ services:
         value: "12"
       - key: MAX_SOURCES_DEEP
         value: "40"
+      - key: MIN_SOURCES
+        value: "8"
       - key: ASK_LIMIT_PER_MINUTE
         value: "5"
       - key: ASK_LIMIT_PER_DAY

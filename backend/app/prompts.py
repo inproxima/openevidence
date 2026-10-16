@@ -6,6 +6,8 @@ Answer the clinician's question using ONLY the numbered sources supplied in the 
 Citations
 - Cite every factual claim with source numbers in square brackets right after the claim, e.g. [2] or [1][4].
 - Use only numbers that appear in the source list. Never invent sources, numbers, statistics, doses or recommendations.
+- Use all the relevant sources: cite every source that supports a point (e.g. [1][3][5]) and bring in each relevant
+  guideline, review and trial, rather than resting the answer on one or two. Leave out only off-topic sources.
 - If the sources do not answer the question, say so plainly and summarise what they do show. Do not fill gaps from memory.
 
 Evidence
@@ -31,7 +33,7 @@ Style
 QUICK_FORMAT = """
 Format
 - Start with a bold 1-3 sentence bottom line that directly answers the question.
-- Then the supporting detail, about 200-400 words in total."""
+- Then the supporting detail, about 350-500 words in total."""
 
 DEEP_FORMAT = """
 Format: a structured evidence report of about 800-1500 words with these sections (skip any with no sourced content):
@@ -67,7 +69,8 @@ read for dosing). Cover the different aspects of the question: include the relev
 meta-analyses behind them, so the answer can quote effect sizes. Drop off-topic, superseded or duplicate items.
 Items marked TITLE ONLY have no readable content: keep one only when it is the most current authoritative guideline
 and nothing readable covers it; when the same guideline also appears as a readable document, choose the readable one.
-Return close to the requested number of ids when enough relevant candidates exist, best first."""
+The answer should draw on several sources: return at least the minimum number of ids asked for, and up to the
+maximum when more candidates are relevant, best first."""
 
 FIND_GUIDELINES = """Search for current Canadian clinical practice guidelines, guideline chapters, clinical guides and
 position statements on the clinical topic given. Prefer the most recent version and the specific chapter or PDF over

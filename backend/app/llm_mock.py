@@ -30,7 +30,7 @@ class MockLLM:
             drug_names=[],
         )
 
-    async def rerank(self, question: str, digest: list[tuple[str, str]], k: int) -> list[str]:
+    async def rerank(self, question: str, digest: list[tuple[str, str]], k: int, least: int) -> list[str]:
         return [cid for cid, _ in digest][:k]
 
     async def stream_answer(

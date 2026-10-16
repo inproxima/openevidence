@@ -49,7 +49,7 @@ class FakeLLM:
         self.history_seen.append(history)
         return PLAN
 
-    async def rerank(self, question, digest, k):
+    async def rerank(self, question, digest, k, least):
         self.calls.append("rerank")
         return [cid for cid, _ in reversed(digest)][:k]
 

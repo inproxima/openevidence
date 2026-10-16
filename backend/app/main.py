@@ -25,6 +25,7 @@ from .llm import LLM
 from .ratelimit import RateLimiter
 from .schemas import AskRequest, ThreadPatch
 from .search import USER_AGENT
+from .tls import ssl_context
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("app")
@@ -38,7 +39,10 @@ DIST = ROOT / "frontend" / "dist"
 async def lifespan(app: FastAPI):
     settings = get_settings()
     async with httpx.AsyncClient(
-        headers={"User-Agent": USER_AGENT}, timeout=httpx.Timeout(20.0, connect=10.0), follow_redirects=True
+        headers={"User-Agent": USER_AGENT},
+        timeout=httpx.Timeout(20.0, connect=10.0),
+        follow_redirects=True,
+        verify=ssl_context(),  # certifi + intermediates some guideline sites omit (tls.py)
     ) as http:
         if settings.llm_mock:
             from .llm_mock import MockLLM

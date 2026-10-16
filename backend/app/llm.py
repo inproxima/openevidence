@@ -113,12 +113,12 @@ class LLM:
         )
         return resp.output_text.strip()
 
-    async def rerank(self, question: str, digest: list[tuple[str, str]], k: int) -> list[str]:
+    async def rerank(self, question: str, digest: list[tuple[str, str]], k: int, least: int) -> list[str]:
         listing = "\n".join(f"{cid}: {line}" for cid, line in digest)
         resp = await self.client.responses.parse(
             model=self.s.openai_model,
             instructions=prompts.RERANK,
-            input=f"Question: {question}\nReturn up to {k} ids.\n\nCandidates:\n{listing}",
+            input=f"Question: {question}\nReturn {least} to {k} ids.\n\nCandidates:\n{listing}",
             reasoning={"effort": self.s.openai_fast_effort},
             text_format=_Ranked,
         )

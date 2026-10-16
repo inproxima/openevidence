@@ -126,14 +126,20 @@ As a backstop, set a monthly budget on the OpenAI project and on the SerpAPI pla
 4. **Merge and rank:** duplicates collapse by PMID/DOI/URL/title; each source gets an evidence
    badge (Guideline › Systematic review › RCT › … ) and a heuristic score (topic match,
    evidence level, recency, Canadian origin); the model then reranks the top candidates and
-   keeps up to 12 (Quick) or 40 (Deep), preferring readable documents over title-only records.
+   keeps 8–12 (Quick) or 8–40 (Deep), preferring readable documents over title-only records.
+   If it returns fewer than `MIN_SOURCES` (8), the best remaining candidates fill the gap.
 5. **Read the chosen documents:** guideline pages and PDFs, **Health Canada product monographs**
    (Canadian dosing, renal adjustment, contraindications), and open-access articles (Europe PMC
    full text). Long documents are cut to the passages that match the question; tables of
-   contents are skipped. Unreadable web hits are dropped.
+   contents are skipped. Unreadable web hits are dropped and replaced by readable candidates.
 6. **Answer** (`gpt-6.1-sol`, medium effort; high in Deep mode) streams over SSE, citing only
-   `[n]` from the numbered list. Citations outside the list are removed; the reference list
-   is built from metadata, never written by the model.
+   `[n]` from the numbered list and drawing on every relevant source. Quick answers run about
+   350–500 words. Citations outside the list are removed; the reference list is built from
+   metadata, never written by the model.
+
+Each answer logs one `Source funnel` line (results per backend, candidates, reranker picks,
+pages dropped and backfilled, sources given, sources cited), so a failing backend shows up in
+the service logs.
 7. **Follow-ups** (low effort), then the turn is saved to the thread.
 
 Typical timings (live, October 2026): Quick 25–45 s (first words at 15–30 s); Deep about 2 min;
@@ -157,6 +163,7 @@ backend/app/
   db.py           threads/messages (SQLite locally, Postgres via DATABASE_URL)
   auth.py         Auth0 RS256 (off when AUTH0_DOMAIN is blank)
   ratelimit.py    per-user and global question limits (ask_log table)
+  tls.py, certs/  certifi plus intermediates some sites omit (ccs.ca), for outbound HTTPS
 render.yaml       Render Blueprint (web service + Postgres)
 frontend/src/     React 19 + Vite + Tailwind (components ported from sara)
 docs/             REA findings on openevidence.com (when captured)
@@ -177,6 +184,9 @@ the search box, sidebar, citation pills, reference cards and design tokens (fron
   rather than guessing: Diabetes Canada's current documents (old PDF links redirect to an index
   page; the Can J Diabetes records have no abstract and aren't in PubMed Central), cfp.ca PDFs
   (bot protection), and paywalled journal guidelines (abstract only).
+- Some sites send an incomplete certificate chain. Browsers repair it; Python doesn't, so the
+  missing intermediate goes in `backend/app/certs/intermediates.pem` (ccs.ca's is there). A
+  `CERTIFICATE_VERIFY_FAILED` in the logs for a new site means one more belongs there.
 - Evidence badges are a study-design label, not a GRADE assessment.
 - Not a medical device. For licensed health professionals; answers must be checked
   against the cited sources.

@@ -30,6 +30,9 @@ class Settings(BaseSettings):
 
     max_sources_quick: int = 12
     max_sources_deep: int = 40
+    # Floor for both modes: a reranker that returns fewer is topped up from the heuristic
+    # order, and unreadable guideline pages are replaced by readable candidates.
+    min_sources: int = 8
 
     database_url: str = ""
 
