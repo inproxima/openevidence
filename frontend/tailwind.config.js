@@ -41,6 +41,8 @@ export default {
           ring: token('hl-ring'), // lit card border
         },
         maple: token('maple'),
+        // The brand mark's own colours (AppMark), kept apart from the UI roles above.
+        mark: { DEFAULT: token('mark'), ink: token('mark-ink'), hl: token('mark-hl') },
       },
       fontFamily: {
         sans: ['"Atkinson Hyperlegible Next Variable"', 'ui-sans-serif', 'system-ui', 'sans-serif'],

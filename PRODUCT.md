@@ -39,7 +39,7 @@ Canada-first evidence. Answers draw on Canadian society guidelines (CCS, Diabete
 - Source text the model could not read is disclosed in the answer, not hidden.
 - Stack: React 19 + Vite + Tailwind CSS 3 frontend served by a FastAPI backend (SSE streaming). The API contract and behaviour must be preserved by UI work.
 - English now; French is planned. Layouts must tolerate longer French strings and a later language switch.
-- Working name "Clinical Evidence CA" is a placeholder, set by `APP_NAME`; no logo or brand assets exist yet.
+- Working name "Clinical Evidence CA", set by `APP_NAME`. The logo (a teal C holding navy source lines with one lime highlighted line, black wordmark) is drawn in `scripts/brand_assets.py`; its files are in `frontend/public/brand/`.
 
 ## Brand Commitments
 

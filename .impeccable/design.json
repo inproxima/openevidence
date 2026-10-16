@@ -361,6 +361,17 @@
           "#FEE2E2"
         ],
         "note": "Canada mark leaf only."
+      },
+      "mark": {
+        "role": "tertiary",
+        "displayName": "Brand Teal, Navy and Lime",
+        "canonical": "rgb(9 155 148)",
+        "tonalRamp": [
+          "#102D46",
+          "#099B94",
+          "#C4E64B"
+        ],
+        "note": "AppMark, favicon and brand files only: mark #099B94, mark-ink #102D46 (zinc-200 in dark), mark-hl #C4E64B. Wordmark is Ink."
       }
     },
     "typographyMeta": {
@@ -593,7 +604,7 @@
     "rules": [
       {
         "name": "The Amber Means Reading Rule",
-        "body": "Amber marks the source being read now: the claim sweep, the lit citation key, the lit card's fill and ring, the sheet's position key. No evidence level uses amber (Observational is orange). The one other amber in the product is the image-identifier caution in the composer, a single amber-50 note with amber-900 text and a ShieldAlert icon; it is a sanctioned one-off, not a warning style. The AppMark's highlighted line depicts the same act of reading a cited claim.",
+        "body": "Amber marks the source being read now: the claim sweep, the lit citation key, the lit card's fill and ring, the sheet's position key. No evidence level uses amber (Observational is orange). The one other amber in the product is the image-identifier caution in the composer, a single amber-50 note with amber-900 text and a ShieldAlert icon; it is a sanctioned one-off, not a warning style. The AppMark's lime line depicts the same act of reading a cited claim, in the brand's own colour; lime never enters the interface.",
         "section": "colors"
       },
       {

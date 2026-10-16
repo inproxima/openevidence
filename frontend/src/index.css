@@ -45,6 +45,9 @@
     --hl-soft: 255 251 235;
     --hl-ring: 252 211 77;
     --maple: 220 38 38;
+    --mark: 9 155 148; /* brand teal #099B94 */
+    --mark-ink: 16 45 70; /* brand navy #102D46 */
+    --mark-hl: 196 230 75; /* brand lime #C4E64B */
     --sweep-ink: #FDE68A;
     --selection: 204 251 241;
     color-scheme: light;
@@ -76,6 +79,8 @@
       --hl-soft: 61 49 32;
       --hl-ring: 149 101 22;
       --maple: 248 113 113;
+      /* Navy lines would vanish on zinc-900; teal and lime hold up as they are. */
+      --mark-ink: 228 228 231;
       --sweep-ink: rgb(252 211 77 / 0.3);
       --selection: 19 78 74;
       color-scheme: dark;

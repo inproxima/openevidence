@@ -191,7 +191,7 @@ Density is reference-tool density: compact semibold UI in Atkinson Hyperlegible 
 A neutral zinc page carrying exactly two signal colours, teal for action and amber for reading, plus a categorical badge palette for evidence levels.
 
 ### Primary
-- **Clinical Teal** (`accent`; teal-400 `accent-dark` at night): the primary action fill, the focus outline (2px, offset 2px), the text caret, the stream caret and the AppMark ground. **Field Focus** (`accent-focus`) is the same teal as the 2px ring on a focused field or the composer: full strength in light, half strength in dark, where full teal-400 flares on zinc (half still clears 3:1 on the surface). Hover deepens to **Deep Teal** (`accent-hover`) in light and brightens to teal-300 in dark. Text on the fill is `accent-fg` (white in light, zinc-950 in dark).
+- **Clinical Teal** (`accent`; teal-400 `accent-dark` at night): the primary action fill, the focus outline (2px, offset 2px), the text caret and the stream caret. **Field Focus** (`accent-focus`) is the same teal as the 2px ring on a focused field or the composer: full strength in light, half strength in dark, where full teal-400 flares on zinc (half still clears 3:1 on the surface). Hover deepens to **Deep Teal** (`accent-hover`) in light and brightens to teal-300 in dark. Text on the fill is `accent-fg` (white in light, zinc-950 in dark).
 - **Link Teal** (`accent-text`): links in prose, text actions ("Open source", "Copy with references"), the selected answer-mode icon, the New question plus, the sub-xl counts button, and hover on related-question arrows. In dark it is teal-300 for contrast on zinc.
 - **Teal Wash** (`accent-soft`): the hover tint behind an idle citation key.
 - **Selection Teal** (`selection`): text selection background, with `fg` text.
@@ -203,6 +203,7 @@ A neutral zinc page carrying exactly two signal colours, teal for action and amb
 
 ### Tertiary
 - **Maple Red** (`maple`; red-400 in dark): the maple leaf in the Canada mark, and nothing else.
+- **Brand Teal, Navy and Lime** (`mark` #099B94, `mark-ink` #102D46, `mark-hl` #C4E64B): the AppMark, the favicon and the logo files in `frontend/public/brand/`, and nothing else; they never stand in for Clinical Teal or Reading Amber. In dark the navy lines lift to zinc-200, since navy vanishes on zinc-900. The wordmark beside the mark is always Ink. The masters are drawn in `scripts/brand_assets.py`.
 - **Evidence hues** (Tailwind palette, applied through `dark:` variants): Guideline green, Systematic review violet, RCT and Clinical trial blue, Health Canada rose, Observational orange. Review and Other share a plain zinc badge; Case report, Registered trial and Preprint share a transparent badge with a firmer zinc outline (the ones to read with care). Light badges are a 50-step wash with 700/800 text; dark badges are a 10% wash with 300 text.
 - **Error red** (Tailwind red): the alert recipe (red-50 wash, red-800 text, red-600/10 ring; red-500/10 wash and red-300 text in dark) and the destructive menu item.
 
@@ -214,7 +215,7 @@ A neutral zinc page carrying exactly two signal colours, teal for action and amb
 - **Hairline** (`line`) and **Firm Hairline** (`line-strong`): all borders and dividers, the scrollbar thumb, the sheet grabber. Solid in both themes so borders read the same on every surface.
 
 ### Named Rules
-**The Amber Means Reading Rule.** Amber marks the source being read now: the claim sweep, the lit citation key, the lit card's fill and ring, the sheet's position key. No evidence level uses amber (Observational is orange). The one other amber in the product is the image-identifier caution in the composer, a single amber-50 note with amber-900 text and a ShieldAlert icon; it is a sanctioned one-off, not a warning style. The AppMark's highlighted line depicts the same act of reading a cited claim.
+**The Amber Means Reading Rule.** Amber marks the source being read now: the claim sweep, the lit citation key, the lit card's fill and ring, the sheet's position key. No evidence level uses amber (Observational is orange). The one other amber in the product is the image-identifier caution in the composer, a single amber-50 note with amber-900 text and a ShieldAlert icon; it is a sanctioned one-off, not a warning style. The AppMark's lime line depicts the same act of reading a cited claim, in the brand's own colour; lime never enters the interface.
 
 **The One Accent Rule.** Teal is the only accent. Primary action, links and text actions, focus, caret, selected mode and selection all draw from it; no second brand hue enters the chrome.
 
