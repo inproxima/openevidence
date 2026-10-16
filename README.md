@@ -63,6 +63,17 @@ Auth0 dashboard:
    Auth0's developer keys, Auth0 shows a notice and can't silently renew sessions, so Google
    users have to sign in again more often.
 
+4. **Organization** `clinical-evidence-ca` (`org_Sih37CNVIKbJs8UG`, `VITE_AUTH0_ORGANIZATION`):
+   gives this app its own login page. The tenant's default login page carries sara's branding
+   and per-application page templates need a paid plan, so the app signs in through an
+   organization whose branding is the logo
+   (`https://clinical-evidence-ca.onrender.com/brand/clinical-evidence-ca-logo.png`, drawn by
+   `scripts/brand_assets.py`), Clinical Teal `#0F766E` buttons and a `#F7F7F8` page. Both
+   login methods above are enabled on it with *Auto-membership* on, so any tester who signs
+   in or signs up joins it; sign-up is on for `clinical-evidence-testers`. The application's
+   *Login Experience* allows organizations (`organization_usage: allow`). Tokens then carry
+   an `org_id` claim, which the API ignores.
+
 If the public URL changes, update the four URL lists in the application and `CORS_ORIGINS`.
 
 ### 2. Create the services (once)

@@ -49,6 +49,9 @@ services:
         value: ToZIB5peBiy7h8qWEWaM9BP7ucYjwhJ4
       - key: VITE_AUTH0_AUDIENCE
         value: https://clinical-evidence-ca/api
+      # Organization clinical-evidence-ca: this app's own login page (README → "1. Auth0").
+      - key: VITE_AUTH0_ORGANIZATION
+        value: org_Sih37CNVIKbJs8UG
 
       # The public URL (also in the Auth0 app's callback, logout and web-origin lists)
       - key: CORS_ORIGINS
