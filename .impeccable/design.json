@@ -1,0 +1,645 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-15T00:00:00Z",
+  "title": "Design System: Clinical Evidence CA",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Copy Paper",
+        "tonalRamp": [
+          "#0B0B09",
+          "#252523",
+          "#424240",
+          "#61615F",
+          "#828280",
+          "#A5A5A2",
+          "#C9C9C6",
+          "#EFEFEC"
+        ]
+      },
+      "paper-white": {
+        "role": "neutral",
+        "displayName": "Bright Sheet",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      },
+      "paper-shade": {
+        "role": "neutral",
+        "displayName": "Paper Shade",
+        "tonalRamp": [
+          "#0B0B08",
+          "#252522",
+          "#42423E",
+          "#61615D",
+          "#83837E",
+          "#A5A5A1",
+          "#C9C9C5",
+          "#EFEFEA"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Laser Ink",
+        "tonalRamp": [
+          "#090B10",
+          "#23252A",
+          "#404248",
+          "#5F6167",
+          "#808289",
+          "#A2A5AC",
+          "#C6C9D0",
+          "#EBEEF6"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "tonalRamp": [
+          "#080B12",
+          "#21252D",
+          "#3E424A",
+          "#5D616A",
+          "#7E828C",
+          "#A0A5AF",
+          "#C4C9D3",
+          "#E9EFF9"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "tonalRamp": [
+          "#070B13",
+          "#20252F",
+          "#3D424D",
+          "#5B616D",
+          "#7C838E",
+          "#9FA5B2",
+          "#C2C9D6",
+          "#E8EFFC"
+        ]
+      },
+      "ink-faint": {
+        "role": "neutral",
+        "displayName": "Faint Ink",
+        "tonalRamp": [
+          "#080B11",
+          "#21252C",
+          "#3E424A",
+          "#5D616A",
+          "#7E838B",
+          "#A0A5AE",
+          "#C4C9D3",
+          "#E9EFF9"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline Rule",
+        "tonalRamp": [
+          "#0B0C07",
+          "#252620",
+          "#42433D",
+          "#61625C",
+          "#82837D",
+          "#A5A69F",
+          "#C9CAC3",
+          "#EEEFE8"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Rule",
+        "tonalRamp": [
+          "#0B0C06",
+          "#24261F",
+          "#41433B",
+          "#60625A",
+          "#82837B",
+          "#A4A69D",
+          "#C8CAC1",
+          "#EEF0E6"
+        ]
+      },
+      "pen": {
+        "role": "primary",
+        "displayName": "Ballpoint Blue",
+        "tonalRamp": [
+          "#02003C",
+          "#051569",
+          "#16349A",
+          "#2F56C6",
+          "#4D7AED",
+          "#6E9EFF",
+          "#95C5FF",
+          "#C1ECFF"
+        ]
+      },
+      "pen-dark": {
+        "role": "primary",
+        "displayName": "Ballpoint Deep",
+        "tonalRamp": [
+          "#010133",
+          "#091C5D",
+          "#1E3A8A",
+          "#385AB5",
+          "#587DDB",
+          "#79A1FF",
+          "#9FC6FF",
+          "#CAEDFF"
+        ]
+      },
+      "pen-wash": {
+        "role": "primary",
+        "displayName": "Pen Wash",
+        "tonalRamp": [
+          "#090B12",
+          "#22252F",
+          "#3E414F",
+          "#5C6170",
+          "#7D8292",
+          "#A0A4B5",
+          "#C4C8D8",
+          "#EAEEFC"
+        ]
+      },
+      "pen-mist": {
+        "role": "primary",
+        "displayName": "Pen Mist",
+        "tonalRamp": [
+          "#050821",
+          "#1B2243",
+          "#353F69",
+          "#525E8E",
+          "#727FB2",
+          "#94A2D7",
+          "#B9C7F9",
+          "#E0EDFF"
+        ]
+      },
+      "hl-yellow": {
+        "role": "secondary",
+        "displayName": "Highlighter Yellow",
+        "tonalRamp": [
+          "#180700",
+          "#372100",
+          "#593E00",
+          "#7B5E00",
+          "#9D8000",
+          "#C1A400",
+          "#E3C944",
+          "#FFF087"
+        ]
+      },
+      "hl-yellow-tint": {
+        "role": "secondary",
+        "displayName": "Highlighter Yellow Tint",
+        "tonalRamp": [
+          "#110B00",
+          "#2D2500",
+          "#4C4201",
+          "#6D6223",
+          "#8E8346",
+          "#B1A668",
+          "#D5CB91",
+          "#F8F0BE"
+        ]
+      },
+      "hl-green-tint": {
+        "role": "tertiary",
+        "displayName": "Guideline Green Tint",
+        "tonalRamp": [
+          "#030F05",
+          "#182A1B",
+          "#314935",
+          "#4F6953",
+          "#6F8B73",
+          "#91AE95",
+          "#B7D1BA",
+          "#DEF6E1"
+        ]
+      },
+      "hl-blue-tint": {
+        "role": "tertiary",
+        "displayName": "Trial Blue Tint",
+        "tonalRamp": [
+          "#030C14",
+          "#182731",
+          "#324551",
+          "#4F6473",
+          "#708695",
+          "#92A9B9",
+          "#B7CDDC",
+          "#DFF2FF"
+        ]
+      },
+      "hl-pink-tint": {
+        "role": "tertiary",
+        "displayName": "Health Canada Pink Tint",
+        "tonalRamp": [
+          "#14060C",
+          "#321E27",
+          "#533944",
+          "#755764",
+          "#977885",
+          "#BB9BA8",
+          "#DFBFCC",
+          "#FFE6F1"
+        ]
+      },
+      "hl-orange-tint": {
+        "role": "tertiary",
+        "displayName": "Observational Orange Tint",
+        "tonalRamp": [
+          "#130901",
+          "#302212",
+          "#513E2A",
+          "#725D46",
+          "#947E66",
+          "#B8A088",
+          "#DBC5AE",
+          "#FEEBD7"
+        ]
+      },
+      "hl-violet-tint": {
+        "role": "tertiary",
+        "displayName": "Systematic Review Violet Tint",
+        "tonalRamp": [
+          "#0C0914",
+          "#272231",
+          "#443E52",
+          "#635D73",
+          "#857E95",
+          "#A7A1B9",
+          "#CBC5DC",
+          "#F0EBFF"
+        ]
+      },
+      "ink-on-green": {
+        "role": "tertiary",
+        "displayName": "Guideline Ink",
+        "tonalRamp": [
+          "#001100",
+          "#022E10",
+          "#1A4E29",
+          "#386F45",
+          "#5A9265",
+          "#7CB587",
+          "#A3D9AD",
+          "#CEFCD6"
+        ]
+      },
+      "ink-on-blue": {
+        "role": "tertiary",
+        "displayName": "Trial Ink",
+        "tonalRamp": [
+          "#000A25",
+          "#042549",
+          "#1B4370",
+          "#386397",
+          "#5885BB",
+          "#7AA8E0",
+          "#A1CDFF",
+          "#CCF2FF"
+        ]
+      },
+      "ink-on-pink": {
+        "role": "tertiary",
+        "displayName": "Health Canada Ink",
+        "tonalRamp": [
+          "#250007",
+          "#4C001F",
+          "#76163A",
+          "#9F3658",
+          "#C55978",
+          "#ED7C9B",
+          "#FFA4BF",
+          "#FFD0E6"
+        ]
+      },
+      "ink-on-orange": {
+        "role": "tertiary",
+        "displayName": "Observational Ink",
+        "tonalRamp": [
+          "#1E0200",
+          "#401700",
+          "#663205",
+          "#8B5026",
+          "#AF7247",
+          "#D59469",
+          "#F8BA92",
+          "#FFE2BF"
+        ]
+      },
+      "ink-on-violet": {
+        "role": "tertiary",
+        "displayName": "Systematic Review Ink",
+        "tonalRamp": [
+          "#0F002E",
+          "#291257",
+          "#462E82",
+          "#654DAB",
+          "#856FD1",
+          "#A793F7",
+          "#CBB9FF",
+          "#EFE1FF"
+        ]
+      },
+      "alert": {
+        "role": "tertiary",
+        "displayName": "Alert Red",
+        "tonalRamp": [
+          "#2D0000",
+          "#570000",
+          "#85000F",
+          "#B11F2C",
+          "#D9494D",
+          "#FF6F6E",
+          "#FF9A96",
+          "#FFC8C2"
+        ]
+      },
+      "alert-tint": {
+        "role": "tertiary",
+        "displayName": "Alert Tint",
+        "tonalRamp": [
+          "#120808",
+          "#2E2222",
+          "#4B3E3E",
+          "#6B5D5D",
+          "#8D7E7E",
+          "#B0A1A1",
+          "#D5C5C5",
+          "#FBEAEA"
+        ]
+      },
+      "maple": {
+        "role": "tertiary",
+        "displayName": "Maple Red",
+        "tonalRamp": [
+          "#310000",
+          "#5E0000",
+          "#8D0003",
+          "#BA0023",
+          "#E43845",
+          "#FF6166",
+          "#FF908F",
+          "#FFC0BC"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Home heading only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "The question as printout title (wide screens)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Phone question title; source title in the focused sheet."
+      },
+      "reading": {
+        "displayName": "Reading",
+        "purpose": "Answer prose in STIX Two Text at the 37.5rem measure."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "UI text, list rows, card titles, section headings."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Meta strips, bylines, mode buttons, progress steps; serif findings."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Evidence badges, card actions, keyboard hints, disclaimers."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lift",
+        "value": "0 1px 2px rgba(22,24,29,0.06), 0 6px 18px -8px rgba(22,24,29,0.18)",
+        "purpose": "Composer and the rail's New question button."
+      },
+      {
+        "name": "pop",
+        "value": "0 12px 32px -12px rgba(22,24,29,0.32), 0 2px 6px rgba(22,24,29,0.08)",
+        "purpose": "Menus, open phone drawer, sign-in card."
+      },
+      {
+        "name": "sheet",
+        "value": "0 -8px 30px -12px rgba(22,24,29,0.35)",
+        "purpose": "Bottom source sheet, shadow cast upward."
+      },
+      {
+        "name": "composer-focus",
+        "value": "0 0 0 3px #B9C8FF",
+        "purpose": "Composer focus halo."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "House curve for the sweep, rise and sheet."
+      },
+      {
+        "name": "sweep",
+        "value": "background-size 460ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Highlighter sweep across a claim."
+      },
+      {
+        "name": "rise",
+        "value": "translateY(8px) to none, 320ms",
+        "purpose": "A new turn entering; content is never hidden at the start."
+      },
+      {
+        "name": "sheet-up",
+        "value": "translateY(100%) to none, 360ms",
+        "purpose": "Phone source sheet."
+      },
+      {
+        "name": "fade-in",
+        "value": "opacity 180ms ease-out",
+        "purpose": "Scrims and progress."
+      },
+      {
+        "name": "card-state",
+        "value": "background-color, border-color 300ms ease-out",
+        "purpose": "Source card lighting."
+      },
+      {
+        "name": "key-state",
+        "value": "colors 150ms",
+        "purpose": "Citation key lighting."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px",
+        "note": "History rail docks; drawer below."
+      },
+      {
+        "name": "xl",
+        "value": "1280px",
+        "note": "Evidence margin column; source sheet and larger keys below."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Ask Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary action: submit a question. Ballpoint Blue, deepens on hover.",
+      "html": "<button class=\"ds-btn-primary\">Ask <svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/></svg></button>",
+      "css": ".ds-btn-primary { display:inline-flex; align-items:center; gap:6px; height:36px; padding:0 12px; border:0; border-radius:6px; background:#1D3FAE; color:#FFFFFF; font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif; font-size:0.8125rem; line-height:1.2rem; font-weight:700; cursor:pointer; transition:background-color 150ms; } .ds-btn-primary:hover { background:#152F86; } .ds-btn-primary:focus-visible { outline:2px solid #1D3FAE; outline-offset:2px; } .ds-btn-primary:disabled { background:#F1F1EC; color:#8A8F98; cursor:default; }"
+    },
+    {
+      "name": "Text Action",
+      "kind": "button",
+      "description": "Bold blue text action with a line icon, e.g. Copy with references.",
+      "html": "<button class=\"ds-btn-text\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\"/><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg>Copy with references</button>",
+      "css": ".ds-btn-text { display:inline-flex; align-items:center; gap:4px; min-height:28px; padding:0; border:0; background:none; color:#1D3FAE; font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif; font-size:0.8125rem; font-weight:700; cursor:pointer; } .ds-btn-text:hover { text-decoration:underline; text-underline-offset:3px; } .ds-btn-text:focus-visible { outline:2px solid #1D3FAE; outline-offset:2px; border-radius:4px; }"
+    },
+    {
+      "name": "Citation Key",
+      "kind": "custom",
+      "refersTo": "cite-key",
+      "description": "Numbered round key after a claim; yellow when its source is active.",
+      "html": "<p class=\"ds-read\">Edoxaban 30 mg once daily is a supported option.<a href=\"#\" class=\"ds-key\">1</a><a href=\"#\" class=\"ds-key is-lit\">9</a></p>",
+      "css": ".ds-read { font-family:'STIX Two Text Variable', 'STIX Two Text', Georgia, serif; font-size:1.09375rem; line-height:1.75rem; color:#16181D; max-width:37.5rem; margin:0; } .ds-key { position:relative; top:-0.12em; display:inline-flex; align-items:center; justify-content:center; height:1.3em; min-width:1.3em; margin:0 1px; padding:0 0.3em; border:1px solid #1D3FAE; border-radius:999px; background:#FFFFFF; color:#1D3FAE; font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif; font-size:0.68em; font-weight:700; line-height:1; text-decoration:none; vertical-align:middle; font-variant-numeric:tabular-nums; transition:background-color 150ms, border-color 150ms, color 150ms; } .ds-key:hover { background:#E8EDFF; } .ds-key:focus-visible { outline:2px solid #1D3FAE; outline-offset:2px; } .ds-key.is-lit, .ds-key.is-lit:hover { background:#FFE24D; border-color:#16181D; color:#16181D; }"
+    },
+    {
+      "name": "Highlighter Sweep",
+      "kind": "custom",
+      "description": "Signature: a yellow stroke sweeps across the claim a citation supports.",
+      "html": "<p class=\"ds-read\"><span class=\"ds-claim\">The supplied evidence does not establish a single best agent for this patient.</span><a href=\"#\" class=\"ds-key\">2</a></p>",
+      "css": ".ds-read { font-family:'STIX Two Text Variable', 'STIX Two Text', Georgia, serif; font-size:1.09375rem; line-height:1.75rem; color:#16181D; max-width:37.5rem; margin:0; } .ds-claim { background-image:linear-gradient(176deg, transparent 12%, #FFE24D 14%, #FFE24D 84%, transparent 88%); background-repeat:no-repeat; background-position:0 60%; background-size:0% 100%; transition:background-size 460ms cubic-bezier(0.16,1,0.3,1); padding:0 1px; margin:0 -1px; } .ds-read:hover .ds-claim { background-size:100% 100%; } .ds-key { display:inline-flex; align-items:center; justify-content:center; height:1.3em; min-width:1.3em; margin-left:2px; border:1px solid #16181D; border-radius:999px; background:#FFE24D; color:#16181D; font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif; font-size:0.68em; font-weight:700; text-decoration:none; vertical-align:middle; }"
+    },
+    {
+      "name": "Evidence Badge",
+      "kind": "chip",
+      "refersTo": "evidence-badge-guideline",
+      "description": "Evidence level as a highlighter tint with matched dark ink.",
+      "html": "<span class=\"ds-badge ds-badge-guideline\">Guideline</span> <span class=\"ds-badge ds-badge-sr\">Systematic review</span> <span class=\"ds-badge ds-badge-rct\">RCT</span> <span class=\"ds-badge ds-badge-hc\">Health Canada</span> <span class=\"ds-badge ds-badge-obs\">Observational</span> <span class=\"ds-badge ds-badge-neutral\">Preprint</span>",
+      "css": ".ds-badge { display:inline-flex; align-items:center; height:20px; padding:0 6px; border-radius:3px; font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif; font-size:0.75rem; line-height:1.1rem; font-weight:700; } .ds-badge-guideline { background:#D7F5DB; color:#0F4A22; } .ds-badge-sr { background:#ECE5FF; color:#40237E; } .ds-badge-rct { background:#D6EEFF; color:#0A3767; } .ds-badge-hc { background:#FFDCEA; color:#7A0F3A; } .ds-badge-obs { background:#FFE6CC; color:#6B3300; } .ds-badge-neutral { background:#F1F1EC; color:#30343C; box-shadow:inset 0 0 0 1px #B9BBB2; }"
+    },
+    {
+      "name": "Source Card",
+      "kind": "card",
+      "refersTo": "source-card",
+      "description": "Margin card with a hanging key; lights yellow tint with its claim.",
+      "html": "<ul class=\"ds-cards\"><li class=\"ds-card\"><span class=\"ds-card-key\">3</span><span class=\"ds-badge\">Guideline</span><a href=\"#\" class=\"ds-card-title\">ENG Pharmacist Checklist v5</a><p class=\"ds-byline\"><span class=\"ds-canada\"><svg width=\"11\" height=\"11\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12 1.5l1.7 3.4 1.9-.9-.6 4.7 2.5-2.6.6 1.8 3.1-.6-1 3.3 1.3.7-4.6 3.9.6 1.9-4.5-.8.2 5.3h-1.4l.2-5.3-4.5.8.6-1.9-4.6-3.9 1.3-.7-1-3.3 3.1.6.6-1.8 2.5 2.6-.6-4.7 1.9.9z\"/></svg>Canada</span> · thrombosiscanada.ca · 2022</p><p class=\"ds-finding\">Calculate CrCl when eGFR is below 50 before initiating anticoagulants.</p></li></ul>",
+      "css": ".ds-cards { list-style:none; margin:0; padding:0 0 0 12px; } .ds-card { position:relative; list-style:none; padding:12px 14px 12px 24px; border:1px solid #D9DAD3; border-radius:6px; background:#FFFFFF; font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif; transition:background-color 300ms ease-out, border-color 300ms ease-out; } .ds-card:hover { border-color:#16181D; background:#FFF4B3; } .ds-card-key { position:absolute; left:-13px; top:12px; display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border:1px solid #1D3FAE; border-radius:999px; background:#FAFAF7; color:#1D3FAE; font-size:0.75rem; font-weight:700; font-variant-numeric:tabular-nums; transition:background-color 300ms, border-color 300ms, color 300ms; } .ds-card:hover .ds-card-key { background:#FFE24D; border-color:#16181D; color:#16181D; } .ds-badge { display:inline-flex; align-items:center; height:20px; padding:0 6px; border-radius:3px; background:#D7F5DB; color:#0F4A22; font-size:0.75rem; font-weight:700; } .ds-card-title { display:block; margin-top:6px; color:#16181D; font-size:0.9375rem; font-weight:700; line-height:1.375; text-decoration:none; } .ds-card-title:hover { color:#1D3FAE; text-decoration:underline; } .ds-byline { margin:2px 0 0; color:#575D68; font-size:0.8125rem; font-variant-numeric:tabular-nums; } .ds-canada { display:inline-flex; align-items:center; gap:4px; color:#C8102E; font-weight:700; } .ds-finding { margin:8px 0 0; padding-top:8px; border-top:1px dashed #D9DAD3; color:#30343C; font-family:'STIX Two Text Variable', 'STIX Two Text', Georgia, serif; font-size:0.8125rem; line-height:1.35rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }"
+    },
+    {
+      "name": "Composer",
+      "kind": "input",
+      "refersTo": "composer",
+      "description": "Question box: ink-bordered sheet with Lift shadow and Pen Mist focus halo.",
+      "html": "<div class=\"ds-composer\"><textarea class=\"ds-composer-input\" rows=\"2\" placeholder=\"Ask a follow-up...\"></textarea><div class=\"ds-composer-row\"><div class=\"ds-modes\" role=\"radiogroup\"><button class=\"ds-mode is-on\" role=\"radio\" aria-checked=\"true\">Quick</button><button class=\"ds-mode\" role=\"radio\" aria-checked=\"false\">Deep</button></div><button class=\"ds-ask\">Ask</button></div></div>",
+      "css": ".ds-composer { max-width:37.5rem; border:1px solid #16181D; border-radius:6px; background:#FFFFFF; box-shadow:0 1px 2px rgba(22,24,29,0.06), 0 6px 18px -8px rgba(22,24,29,0.18); font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif; transition:box-shadow 150ms; } .ds-composer:focus-within { box-shadow:0 0 0 3px #B9C8FF; } .ds-composer-input { display:block; width:100%; box-sizing:border-box; min-height:84px; resize:none; border:0; outline:none; background:transparent; padding:14px 16px 8px; color:#16181D; font:inherit; font-size:1.0625rem; line-height:1.625; } .ds-composer-input::placeholder { color:#575D68; } .ds-composer-row { display:flex; align-items:center; justify-content:space-between; padding:0 10px 10px; } .ds-modes { display:inline-flex; padding:2px; border:1px solid #D9DAD3; border-radius:6px; } .ds-mode { height:32px; padding:0 10px; border:0; border-radius:4px; background:none; color:#575D68; font:inherit; font-size:0.8125rem; font-weight:700; cursor:pointer; } .ds-mode:hover { color:#16181D; } .ds-mode.is-on { background:#1D3FAE; color:#FFFFFF; } .ds-ask { height:36px; padding:0 12px; border:0; border-radius:6px; background:#1D3FAE; color:#FFFFFF; font:inherit; font-size:0.8125rem; font-weight:700; cursor:pointer; } .ds-ask:hover { background:#152F86; } .ds-mode:focus-visible, .ds-ask:focus-visible { outline:2px solid #1D3FAE; outline-offset:2px; }"
+    },
+    {
+      "name": "History Rail",
+      "kind": "nav",
+      "refersTo": "history-rail",
+      "description": "Ballpoint-blue history rail with New question and two-line clamped threads.",
+      "html": "<nav class=\"ds-rail\"><button class=\"ds-rail-new\">+ New question</button><p class=\"ds-rail-h\">Recent</p><a href=\"#\" class=\"ds-rail-item is-active\">Anticoagulation for atrial fibrillation in a 78-year-old with CKD stage 4</a><a href=\"#\" class=\"ds-rail-item\">Rhythm strip from a 70-year-old with palpitations. What is it and what next?</a></nav>",
+      "css": ".ds-rail { display:flex; flex-direction:column; gap:2px; width:272px; padding:12px 8px; background:#1D3FAE; color:#FFFFFF; font-family:'Atkinson Hyperlegible Next Variable', ui-sans-serif, system-ui, sans-serif; } .ds-rail-new { margin:0 4px 12px; padding:10px 12px; border:0; border-radius:6px; background:#FFFFFF; color:#1D3FAE; font:inherit; font-size:0.9375rem; font-weight:700; text-align:left; box-shadow:0 1px 2px rgba(22,24,29,0.06), 0 6px 18px -8px rgba(22,24,29,0.18); cursor:pointer; } .ds-rail-h { margin:8px 8px 4px; color:#B9C8FF; font-size:0.75rem; font-weight:700; } .ds-rail-item { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; padding:8px; border-radius:6px; color:#E3E9FF; font-size:0.9375rem; line-height:1.375; text-decoration:none; } .ds-rail-item:hover { background:rgba(255,255,255,0.08); } .ds-rail-item.is-active { background:rgba(255,255,255,0.16); color:#FFFFFF; font-weight:700; } .ds-rail-item:focus-visible, .ds-rail-new:focus-visible { outline:2px solid #FFFFFF; outline-offset:2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Journal Club Printout",
+    "overview": "Every answer reads like a printout a colleague has already checked for you. The ground is bright copy paper, the text is laser-black ink, and the app's shell (the history rail, the citation keys, the primary actions) is drawn in ballpoint blue. Fluorescent highlighter ink appears only where evidence is concerned: one yellow stroke marks the citation currently being read, and five quieter tints classify each source by evidence level.\n\nDensity is that of a working document, not a landing page. The answer is set in a journal serif to a fixed measure. Sources sit beside it in a sticky margin, each one a numbered card whose key hangs into the gutter, and hairline ink rules separate the parts. Depth is shallow: a sheet of paper on a desk, never floating glass.\n\nThe system's signature is the highlighter sweep. Hovering, focusing or tapping a citation key draws a yellow stroke left to right across exactly the words that source supports, and lights the matching margin card in the same ink.",
+    "keyCharacteristics": [
+      "Copy-paper ground, laser ink, ballpoint-blue shell.",
+      "Highlighter ink is a signal for evidence, never decoration.",
+      "STIX Two Text for answer prose; Atkinson Hyperlegible Next for every UI surface.",
+      "One shared right edge (37.5rem) for the question rule, answer, related questions and composer.",
+      "Hairline rules, 6px sheet corners, fully round numbered keys.",
+      "Tabular lining numerals wherever numbers are read or compared."
+    ],
+    "rules": [
+      {
+        "name": "The Reserved Yellow Rule",
+        "body": "Yellow means \"the source you are reading now\". No evidence level, status, brand mark or decoration may use yellow; the sweep, the lit key, the lit card and text selection are its only jobs.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink-on-Tint Rule",
+        "body": "Every highlighter tint carries dark ink of its own hue (or Laser Ink), never white or pen blue, so every badge and lit surface clears WCAG AA.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Blue Rule",
+        "body": "Ballpoint Blue is the only chromatic UI colour. Interactive affordances are blue or ink; highlighter colour never marks a control as clickable.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Scale Rule",
+        "body": "Sizes come only from the seven-step scale (micro, label, body, reading, title, headline, display). Answer prose uses Reading, UI uses micro to title, and the question uses Headline.",
+        "section": "typography"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Serif is for what sources and the answer say: answer prose, findings and blockquotes. Sans is for everything a user acts on or scans. Never set a control in STIX.",
+        "section": "typography"
+      },
+      {
+        "name": "The Counted Numerals Rule",
+        "body": "Counts, dates, doses, keys and table figures use lining tabular numerals.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Edge Rule",
+        "body": "Anything belonging to the answer column stops at 37.5rem. When there is extra width, the evidence margin absorbs it.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Card Rule",
+        "body": "Source cards never take a shadow. A card shows its state through a border shift (Hairline, then Strong on hover, then Laser Ink when lit) and a fill change to the yellow tint.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep Highlighter Yellow for the active citation, its claim sweep, its lit card and text selection only.",
+      "**Do** classify evidence with the tint and matched-ink pairs: green for Guideline, violet for Systematic review, blue for RCT and Clinical trial, pink for Health Canada, orange for Observational, and Paper Shade for everything else.",
+      "**Do** show Canadian origin once, as the maple mark in the byline, and show the cited and reviewed counts once per breakpoint.",
+      "**Do** end every answer-column element on the 37.5rem edge and let the evidence margin take the slack.",
+      "**Do** set answer prose and findings in STIX Two Text at Reading size with lining tabular numerals, and all controls in Atkinson Hyperlegible Next.",
+      "**Do** separate parts with hairline rules and ink rules, and let cards change state through border and fill rather than shadow.",
+      "**Do** start motion from an already-visible state (rise, fade, sweep) and honour reduced motion."
+    ],
+    "donts": [
+      "**Don't** give any evidence level, status or brand element a yellow fill.",
+      "**Don't** put white or blue text on a highlighter tint.",
+      "**Don't** add a second chip for origin or repeat a count that is already shown.",
+      "**Don't** centre a chat column with sources dumped underneath; sources live beside the answer, or in the sheet on phones.",
+      "**Don't** shadow source cards or add type sizes outside the seven-step scale.",
+      "**Don't** make highlighter colours interactive affordances; controls are blue or ink."
+    ]
+  }
+}

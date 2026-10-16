@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "app",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "--project", ".", "uvicorn", "app.main:app", "--app-dir", "backend", "--port", "8000"],
+      "port": 8000
+    },
+    {
+      "name": "app-mock",
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["LLM_MOCK=true", "DATABASE_URL=sqlite:///data/mock.db", "uv", "run", "--project", ".", "uvicorn", "app.main:app", "--app-dir", "backend", "--port", "8001"],
+      "port": 8001
+    }
+  ]
+}

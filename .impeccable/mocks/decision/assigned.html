@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en-CA"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:#FAFAF7;color:#16181D;font-family:"Atkinson Hyperlegible",system-ui,sans-serif;display:grid;grid-template-columns:248px 1fr}
+.rail{background:#1D3FAE;color:#E8EDFF;padding:22px 18px;display:flex;flex-direction:column;gap:18px}
+.brand{font-weight:700;font-size:15px;color:#fff;letter-spacing:.01em}
+.new{background:#fff;color:#1D3FAE;border-radius:6px;padding:10px 12px;font-weight:700;font-size:14px}
+.rail h4{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#AFC0FF;margin-top:6px}
+.rail a{display:block;font-size:13.5px;color:#E8EDFF;padding:7px 8px;border-radius:5px;line-height:1.3}
+.rail a.on{background:rgba(255,255,255,.14);color:#fff}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 392px;column-gap:40px;padding:34px 44px 0 56px;height:900px;overflow:hidden}
+.q{grid-column:1/3;border-bottom:1.5px solid #16181D;padding-bottom:16px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end}
+.q h1{font-size:28px;line-height:1.25;font-weight:700;max-width:860px}
+.meta{font-size:12px;color:#5A606B;text-align:right;font-variant-numeric:tabular-nums}
+.ans{font-family:"Source Serif 4",Georgia,serif;font-size:17px;line-height:1.65;max-width:690px}
+.ans p{margin-bottom:14px}
+.ans h3{font-family:"Atkinson Hyperlegible",sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin:20px 0 8px;color:#1D3FAE}
+.ans b{font-weight:600}
+mark{background:linear-gradient(transparent 12%,#FFE24D 12%,#FFE24D 88%,transparent 88%);color:inherit;padding:0 2px}
+.c{font-family:"Atkinson Hyperlegible",sans-serif;font-size:11px;font-weight:700;color:#1D3FAE;border:1.5px solid #1D3FAE;border-radius:4px;padding:0 4px;margin-left:2px;vertical-align:2px;font-variant-numeric:tabular-nums}
+.c.hot{background:#FFE24D;border-color:#16181D;color:#16181D}
+.margin{border-left:1.5px solid #1D3FAE;padding-left:22px}
+.margin h4{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5A606B;margin-bottom:12px;display:flex;justify-content:space-between}
+.card{background:#fff;border:1px solid #D9DBE1;border-radius:6px;padding:12px 14px;margin-bottom:10px;position:relative}
+.card.hot{border-color:#16181D;box-shadow:inset 4px 0 0 #FFE24D}
+.n{position:absolute;left:-36px;top:12px;width:24px;height:24px;border-radius:50%;background:#FAFAF7;border:1.5px solid #1D3FAE;color:#1D3FAE;font-size:11.5px;font-weight:700;display:grid;place-items:center}
+.card.hot .n{background:#FFE24D;border-color:#16181D;color:#16181D}
+.lvl{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border-radius:3px;margin-right:6px}
+.g{background:#D6F5D9;color:#11552A}.hc{background:#FFE0EC;color:#8A1240}.sr{background:#FFF3B0;color:#6B5200}
+.ca{font-size:11px;color:#B3122E;font-weight:700}
+.t{font-size:14px;font-weight:700;line-height:1.3;margin:6px 0 3px}
+.by{font-size:12px;color:#5A606B;font-variant-numeric:tabular-nums}
+.f{font-size:12.5px;color:#30343C;margin-top:6px;line-height:1.4;border-top:1px dashed #D9DBE1;padding-top:6px}
+.composer{position:fixed;left:304px;bottom:22px;width:690px;background:#fff;border:1.5px solid #16181D;border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;font-size:15px;color:#5A606B}
+.seg{display:flex;gap:4px;font-size:12.5px}.seg span{border:1px solid #D9DBE1;border-radius:5px;padding:4px 9px}.seg .on{background:#1D3FAE;color:#fff;border-color:#1D3FAE}
+</style></head><body>
+<aside class="rail">
+  <div class="brand">Clinical Evidence CA</div>
+  <div class="new">+ New question</div>
+  <h4>Recent</h4>
+  <a class="on">Anticoagulation for AF in a 78-year-old with CKD stage 4</a>
+  <a>Diabetes Canada first-line for T2D with ASCVD</a>
+  <a>What if the patient also has HFrEF?</a>
+  <a>Statins for primary prevention over 75</a>
+</aside>
+<main class="main">
+  <div class="q"><h1>Anticoagulation for atrial fibrillation in a 78-year-old with CKD stage 4 (eGFR 22): which agent and dose?</h1><div class="meta">Quick · 10 sources · 7 cited<br>Answered 33 s</div></div>
+  <article class="ans">
+    <p><b>Confirm creatinine clearance first: eGFR 22 alone is not enough to apply Canadian dosing.</b> <mark>Edoxaban 30 mg once daily is a Canadian-labelled option at CrCl 15–29 mL/min</mark><span class="c hot">3</span>; apixaban has the best bleeding profile in advanced CKD<span class="c">4</span>, but its Canadian monograph gives no dosing recommendation at CrCl 15–24 mL/min.<span class="c">2</span></p>
+    <h3>Agent and dose</h3>
+    <p>At CrCl ≥25 mL/min, apixaban is 5 mg twice daily, reduced to 2.5 mg only when two of age ≥80, weight ≤60 kg or creatinine ≥133 µmol/L apply<span class="c">2</span>. At 78, the age criterion is not met.<span class="c">2</span></p>
+    <p>Pivotal trials largely excluded advanced CKD; pooled evidence is heterogeneous and calls for dosing trials.<span class="c">4</span><span class="c">6</span></p>
+  </article>
+  <aside class="margin">
+    <h4><span>Evidence</span><span>7 cited of 10</span></h4>
+    <div class="card"><span class="n">2</span><span class="lvl hc">Health Canada</span><span class="ca">CA</span><div class="t">Eliquis (apixaban) product monograph</div><div class="by">Health Canada DPD · rev. 2025</div><div class="f">No dosing recommendation at eCrCl 15–24 mL/min.</div></div>
+    <div class="card hot"><span class="n">3</span><span class="lvl hc">Health Canada</span><span class="ca">CA</span><div class="t">Lixiana (edoxaban) product monograph</div><div class="by">Health Canada DPD · rev. 2024</div><div class="f">30 mg once daily at CrCl 15–29 mL/min (non-valvular AF).</div></div>
+    <div class="card"><span class="n">4</span><span class="lvl sr">Systematic review</span><div class="t">Oral anticoagulants for AF with chronic kidney disease</div><div class="by">Front Cardiovasc Med · 2022 · 19 studies</div><div class="f">CrCl &lt;30: major bleeding HR 0.74 (0.59–0.93) vs warfarin.</div></div>
+    <div class="card"><span class="n">1</span><span class="lvl g">Guideline</span><span class="ca">CA</span><div class="t">CCS/CHRS comprehensive AF guidelines</div><div class="by">Can J Cardiol · 2020</div><div class="f">Abstract only: renal dosing table not readable.</div></div>
+  </aside>
+  <div class="composer"><span>Ask a follow-up…</span><span class="seg"><span class="on">Quick</span><span>Deep</span><span>Image</span></span></div>
+</main>
+</body></html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en-CA"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1440px;height:900px;overflow:hidden;background:#FFFFFF;color:#1B2430;font-family:"Public Sans",system-ui,sans-serif;display:grid;grid-template-rows:56px 1fr}
+header{background:#0E6E5C;color:#fff;display:flex;align-items:center;gap:28px;padding:0 28px;font-size:14px}
+header b{font-size:16px}header span{opacity:.85}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 640px;gap:36px;padding:30px 36px;overflow:hidden}
+h1{font-size:26px;line-height:1.25;margin-bottom:18px;font-weight:700}
+.ans{font-size:16.5px;line-height:1.6;max-width:640px}
+.ans p{margin-bottom:12px}
+.claim{border-left:4px solid #2E7D4F;padding:8px 12px;background:#F2F8F4;margin-bottom:12px}
+.claim.amber{border-color:#B7791F;background:#FBF5EA}
+.cert{font-size:12px;font-weight:700;color:#2E7D4F;letter-spacing:.06em;display:block;margin-top:4px}
+.amber .cert{color:#8A5A10}
+sup{font-size:11px;font-weight:700;color:#0E6E5C}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+caption{text-align:left;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#5B6670;margin-bottom:8px;font-weight:700}
+th{text-align:left;font-size:11.5px;color:#5B6670;border-bottom:2px solid #1B2430;padding:6px 8px}
+td{border-bottom:1px solid #E1E5EA;padding:9px 8px;vertical-align:top}
+td.n{font-weight:700;color:#0E6E5C}
+.plot{position:relative;width:140px;height:18px}
+.plot .axis{position:absolute;left:70px;top:0;bottom:0;border-left:1px dashed #9AA4AE}
+.plot .ci{position:absolute;top:8px;height:2px;background:#1B2430}
+.plot .pt{position:absolute;top:4px;width:10px;height:10px;background:#1B2430;transform:rotate(45deg)}
+.g{color:#2E7D4F;font-weight:700}.a{color:#8A5A10;font-weight:700}.r{color:#B23A48;font-weight:700}
+.composer{position:fixed;left:36px;bottom:24px;width:640px;border:1px solid #C9D1D8;border-radius:8px;padding:12px 14px;color:#5B6670;font-size:15px}
+</style></head><body>
+<header><b>Clinical Evidence CA</b><span>History</span><span>New question</span></header>
+<div class="wrap">
+  <section>
+    <h1>Anticoagulation for AF in a 78-year-old with CKD stage 4 (eGFR 22): which agent and dose?</h1>
+    <div class="ans">
+      <div class="claim"><b>Edoxaban 30 mg once daily is a Canadian-labelled option at CrCl 15–29 mL/min.</b><sup>3</sup><span class="cert">REGULATORY · HEALTH CANADA</span></div>
+      <div class="claim amber"><b>Apixaban has the lowest major-bleeding risk vs warfarin in advanced CKD.</b><sup>4</sup><span class="cert">⊕⊕◯◯ LOW CERTAINTY · HETEROGENEOUS</span></div>
+      <p>Its Canadian monograph gives no dosing recommendation at CrCl 15–24 mL/min.<sup>2</sup> Confirm creatinine clearance before choosing a dose.</p>
+    </div>
+  </section>
+  <section>
+    <table>
+      <caption>Summary of findings · 7 cited</caption>
+      <tr><th>#</th><th>Source</th><th>Design</th><th>Effect (95% CI)</th><th></th><th>Certainty</th></tr>
+      <tr><td class="n">4</td><td>Front Cardiovasc Med 2022</td><td>NMA, 19 studies</td><td>Major bleeding HR 0.74 (0.59–0.93)</td><td><div class="plot"><span class="axis"></span><span class="ci" style="left:44px;width:24px"></span><span class="pt" style="left:50px"></span></div></td><td class="a">⊕⊕◯◯</td></tr>
+      <tr><td class="n">5</td><td>Circulation 2020</td><td>RCT subgroup, n=269</td><td>Major bleeding HR 0.34 (0.14–0.80)</td><td><div class="plot"><span class="axis"></span><span class="ci" style="left:14px;width:52px"></span><span class="pt" style="left:26px"></span></div></td><td class="a">⊕⊕◯◯</td></tr>
+      <tr><td class="n">6</td><td>Cureus 2026</td><td>Meta-analysis</td><td>Major bleeding HR 0.74 (0.61–0.90)</td><td><div class="plot"><span class="axis"></span><span class="ci" style="left:48px;width:18px"></span><span class="pt" style="left:52px"></span></div></td><td class="a">⊕⊕◯◯</td></tr>
+      <tr><td class="n">2</td><td>Eliquis monograph</td><td>Health Canada</td><td>No dose at CrCl 15–24</td><td></td><td class="g">Label</td></tr>
+      <tr><td class="n">3</td><td>Lixiana monograph</td><td>Health Canada</td><td>30 mg daily, CrCl 15–29</td><td></td><td class="g">Label</td></tr>
+      <tr><td class="n">1</td><td>CCS/CHRS AF 2020</td><td>Guideline</td><td>Abstract only</td><td></td><td class="r">Not read</td></tr>
+    </table>
+  </section>
+</div>
+<div class="composer">Ask a follow-up…</div>
+</body></html>

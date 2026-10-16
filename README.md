@@ -1,0 +1,105 @@
+# Clinical Evidence CA
+
+Evidence answers for Canadian clinicians, modelled on the OpenEvidence workflow:
+ask a clinical question → a streamed answer with numbered citations → source cards
+with evidence-strength badges → related follow-up questions, saved as threads.
+
+> Working name only. This project does not use OpenEvidence's name, branding, code,
+> prompts or licensed content (e.g. NEJM/JAMA full text). Rename via `APP_NAME`.
+
+## Run locally
+
+Requirements: [uv](https://docs.astral.sh/uv/), Node 20+.
+
+```bash
+cp .env.example .env        # then add OPENAI_API_KEY (and ideally SERPAPI_API_KEY, NCBI_API_KEY)
+scripts/dev.sh              # FastAPI :8000 + Vite :5173 → open http://localhost:5173
+```
+
+Single-server mode (what a deployment runs): `cd frontend && npm run build`, then
+`uv run uvicorn app.main:app --app-dir backend --port 8000` serves the app at :8000.
+
+No OpenAI key yet? `LLM_MOCK=true` runs the real searches with a canned answer so you
+can exercise the UI.
+
+Tests: `uv run pytest`
+
+## API keys
+
+| Variable | Needed | Where to get it |
+|---|---|---|
+| `OPENAI_API_KEY` | **Yes** | platform.openai.com → API keys. Must have access to `gpt-6.1-sol`. |
+| `SERPAPI_API_KEY` | Recommended | serpapi.com. Second guideline search engine; 5 searches per question. `GUIDELINE_SEARCH` picks engines. |
+| `NCBI_API_KEY`, `NCBI_EMAIL` | Optional (free) | ncbi.nlm.nih.gov → Account settings → API Key Management. 10 vs 3 requests/s for PubMed. |
+| Europe PMC, ClinicalTrials.gov, Health Canada DPD | — | Public APIs, no key. |
+| `AUTH0_*`, `VITE_AUTH0_*` | Deployment only | An Auth0 SPA application + API (audience). Blank = no login. |
+
+## How an answer is made
+
+1. **Guideline search starts at once,** restricted to Canadian guideline sites (Diabetes Canada,
+   CCS, Hypertension Canada, Canadian Task Force, CDA-AMC, PHAC/NACI, CMAJ, CFP, Thrombosis
+   Canada, CPS, SOGC, AMMI, BC Guidelines, Ontario Health, Alberta TOP…). OpenAI hosted web
+   search and SerpAPI run in parallel within a time budget (24 s Quick, 45 s Deep). Results off
+   those sites, home pages and French duplicates are discarded. With an image, this waits for
+   the planner so the search reflects what the image shows.
+2. **Plan** (`gpt-6.1-sol`, low effort): PubMed MeSH queries, a broad topic and condition query,
+   a Europe PMC query, a guideline query, trial terms and drug names.
+3. **Search in parallel:** PubMed (E-utilities), **Canadian society guidelines in PubMed**
+   (Can J Diabetes, Can J Cardiol, CMAJ, CFP, JOGC… with guideline filters; by topic, and by
+   condition newest-first so in-process updates without MeSH or abstracts are found),
+   Europe PMC, ClinicalTrials.gov, Health Canada Drug Product Database.
+4. **Merge and rank:** duplicates collapse by PMID/DOI/URL/title; each source gets an evidence
+   badge (Guideline › Systematic review › RCT › … ) and a heuristic score (topic match,
+   evidence level, recency, Canadian origin); the model then reranks the top candidates and
+   keeps up to 12 (Quick) or 40 (Deep), preferring readable documents over title-only records.
+5. **Read the chosen documents:** guideline pages and PDFs, **Health Canada product monographs**
+   (Canadian dosing, renal adjustment, contraindications), and open-access articles (Europe PMC
+   full text). Long documents are cut to the passages that match the question; tables of
+   contents are skipped. Unreadable web hits are dropped.
+6. **Answer** (`gpt-6.1-sol`, medium effort; high in Deep mode) streams over SSE, citing only
+   `[n]` from the numbered list. Citations outside the list are removed; the reference list
+   is built from metadata, never written by the model.
+7. **Follow-ups** (low effort), then the turn is saved to the thread.
+
+Typical timings (live, October 2026): Quick 25–45 s (first words at 15–30 s); Deep about 2 min;
+with an image about 55 s.
+
+Images (ECG, skin photo, lab report…) are read first to guide the search and are also sent
+with the answer request. They are never stored.
+
+## Layout
+
+```
+backend/app/
+  main.py         FastAPI: POST /api/ask (SSE), /api/threads CRUD, serves frontend/dist
+  pipeline.py     one question → event stream
+  retrieval.py    fan-out, merge, scoring, budgets
+  search/         pubmed, europepmc, trials, health_canada, guidelines (SerpAPI)
+  llm.py          OpenAI Responses API calls;  llm_mock.py for LLM_MOCK
+  prompts.py      system instructions
+  evidence.py     publication type → evidence badge
+  citations.py    [n] checking, Vancouver references
+  db.py           threads/messages (SQLite locally, Postgres via DATABASE_URL)
+  auth.py         Auth0 RS256 (off when AUTH0_DOMAIN is blank)
+frontend/src/     React 19 + Vite + Tailwind (components ported from sara)
+docs/             REA findings on openevidence.com (when captured)
+```
+
+## Reused from sara
+
+Ported, not imported: SerpAPI site-filtered search and trafilatura page extraction
+(`search/guidelines.py`), reference URL helpers (`citations.py`), the Postgres URL
+normalisation (`db.py`), the Auth0 check without its hardcoded fallbacks (`auth.py`), and
+the search box, sidebar, citation pills, reference cards and design tokens (frontend).
+
+## Known limits
+
+- SerpAPI latency is erratic (0.5–80 s per call); OpenAI web search takes 15–20 s. Quick answers
+  use whatever guideline results arrive within 24 s.
+- Some guideline text isn't machine-readable through public routes, and the app says so
+  rather than guessing: Diabetes Canada's current documents (old PDF links redirect to an index
+  page; the Can J Diabetes records have no abstract and aren't in PubMed Central), cfp.ca PDFs
+  (bot protection), and paywalled journal guidelines (abstract only).
+- Evidence badges are a study-design label, not a GRADE assessment.
+- Not a medical device. For licensed health professionals; answers must be checked
+  against the cited sources.
