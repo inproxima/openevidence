@@ -37,8 +37,9 @@ Tests: `uv run pytest`
 ## Deploy to Render (testers)
 
 `render.yaml` is a Render Blueprint: one web service that builds the frontend and serves it
-with the API, plus a Postgres database for threads and the question log. About US$13/month
-(Starter web service $7 + Basic-256mb Postgres $6) plus OpenAI and SerpAPI usage. It runs in
+with the API, plus a Postgres database for threads and the question log. About US$13.30/month
+(Starter web service $7 + Basic-256mb Postgres $6 + 1 GB disk $0.30) plus OpenAI and SerpAPI
+usage. It runs in
 Oregon because Render has no Canadian region, so ask testers not to enter identifiable
 patient information.
 

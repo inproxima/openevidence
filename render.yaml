@@ -88,5 +88,6 @@ databases:
   - name: clinical-evidence-ca-db
     region: oregon
     plan: 0.1c-256mb # "Basic-256mb"
+    diskSizeGB: 1 # threads are text; disk can grow later but never shrink
     databaseName: clinical_evidence
     user: clinical_evidence
