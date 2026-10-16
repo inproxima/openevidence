@@ -80,6 +80,11 @@ async def search(
     """sort: "relevance" or "pub_date" (newest first)."""
     try:
         return await efetch(client, settings, await esearch(client, settings, query, retmax, sort))
+    except httpx.HTTPStatusError as exc:
+        # Not str(exc) or the body: the URL carries api_key and email, and NCBI echoes the key back.
+        hint = " (NCBI rejects an invalid NCBI_API_KEY with 400)" if exc.response.status_code == 400 else ""
+        log.warning("PubMed search failed for %r: HTTP %s%s", query, exc.response.status_code, hint)
+        return []
     except Exception as exc:  # noqa: BLE001 - a failed backend must not fail the answer
         log.warning("PubMed search failed for %r: %s", query, exc)
         return []
