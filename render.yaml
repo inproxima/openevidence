@@ -1,7 +1,7 @@
 # Render Blueprint: one web service (FastAPI serving the built React app) + Postgres.
 # Create it once from the Render dashboard (New → Blueprint → this repo); every push to
-# main redeploys. Values marked `sync: false` are secrets or per-deployment settings:
-# Render asks for them when the Blueprint is created and never reads them from this file.
+# main redeploys. Values marked `sync: false` are secrets: Render asks for them when the
+# Blueprint is created, and they never appear in this file.
 # See README → "Deploy to Render".
 services:
   - type: web
@@ -37,21 +37,22 @@ services:
       - key: NCBI_EMAIL
         sync: false
 
-      # --- Auth0 (README → "Auth0 for testers"); VITE_* are read at build time ---
+      # --- Auth0 (README → "1. Auth0"). Not secrets: the domain, client ID and audience
+      # ship in the frontend bundle. VITE_* are read at build time. ---
       - key: AUTH0_DOMAIN
-        sync: false
+        value: honeybeelogic.ca.auth0.com
       - key: AUTH0_AUDIENCE
-        sync: false
+        value: https://clinical-evidence-ca/api
       - key: VITE_AUTH0_DOMAIN
-        sync: false
+        value: honeybeelogic.ca.auth0.com
       - key: VITE_AUTH0_CLIENT_ID
-        sync: false
+        value: ToZIB5peBiy7h8qWEWaM9BP7ucYjwhJ4
       - key: VITE_AUTH0_AUDIENCE
-        sync: false
+        value: https://clinical-evidence-ca/api
 
-      # The public URL, e.g. https://clinical-evidence-ca.onrender.com
+      # The public URL (also in the Auth0 app's callback, logout and web-origin lists)
       - key: CORS_ORIGINS
-        sync: false
+        value: https://clinical-evidence-ca.onrender.com
 
       # --- non-secret settings (defaults match .env.example) ---
       - key: APP_NAME

@@ -42,53 +42,47 @@ with the API, plus a Postgres database for threads and the question log. About U
 Oregon because Render has no Canadian region, so ask testers not to enter identifiable
 patient information.
 
-### 1. Auth0 (in sara's tenant)
+### 1. Auth0 (set up in sara's tenant, `honeybeelogic.ca.auth0.com`)
 
-1. **API**: Applications → APIs → Create API. Name `Clinical Evidence CA`, identifier
-   `https://clinical-evidence-ca/api` (this is the audience; it never has to resolve), RS256.
-2. **Application**: Applications → Applications → Create Application → `Clinical Evidence CA`,
-   type *Single Page Web Applications*. On its Settings tab, put the same list in all three
-   fields, then save:
+These already exist; the values are in `render.yaml`. To check or recreate them in the
+Auth0 dashboard:
 
-   | Field | Value |
-   |---|---|
-   | Allowed Callback URLs | `https://clinical-evidence-ca.onrender.com, http://localhost:5173` |
-   | Allowed Logout URLs | `https://clinical-evidence-ca.onrender.com, http://localhost:5173` |
-   | Allowed Web Origins | `https://clinical-evidence-ca.onrender.com, http://localhost:5173` |
+1. **API** `Clinical Evidence CA`: identifier (the audience) `https://clinical-evidence-ca/api`,
+   RS256, *Allow Skipping User Consent* on. The identifier never has to resolve.
+2. **Application** `Clinical Evidence CA`, type *Single Page Application*, client ID
+   `ToZIB5peBiy7h8qWEWaM9BP7ucYjwhJ4`, grants Authorization Code + Refresh Token. Allowed
+   Callback URLs, Allowed Logout URLs, Allowed Web Origins and Allowed Origins (CORS) all hold
+   `https://clinical-evidence-ca.onrender.com, http://localhost:5173`.
+3. **Invite-only login**: database connection `clinical-evidence-testers` with *Disable Sign
+   Ups* on, enabled for this application only. On the application's Connections tab every other
+   connection (Google, sara's `Username-Password-Authentication`) is off, so only invited
+   testers can sign in. sara's apps are unaffected.
 
-   Copy the **Domain** (e.g. `your-tenant.us.auth0.com`, no `https://`) and **Client ID**.
-3. **Invite-only login**: Authentication → Database → Create DB Connection named
-   `clinical-evidence-testers`, and turn on **Disable Sign Ups**. On its Applications tab enable
-   only `Clinical Evidence CA`. Then on the application's **Connections** tab turn every other
-   connection off (sara's `Username-Password-Authentication`, Google…), so only invited
-   testers can sign in. sara's own login is unchanged.
+If the public URL changes, update the four URL lists in the application and `CORS_ORIGINS`.
 
 ### 2. Create the services (once)
 
-Render dashboard → New → Blueprint → repository `inproxima/openevidence`. Render reads
-`render.yaml` and asks for the values it doesn't hold:
+Render dashboard → New → Blueprint → repository `inproxima/openevidence` (or open
+<https://render.com/deploy?repo=https://github.com/inproxima/openevidence>). Render reads
+`render.yaml` and asks only for the secrets:
 
 | Variable | Value |
 |---|---|
-| `OPENAI_API_KEY`, `SERPAPI_API_KEY` | your keys |
+| `OPENAI_API_KEY`, `SERPAPI_API_KEY` | your keys (as in `.env`) |
 | `NCBI_API_KEY`, `NCBI_EMAIL` | optional, may be blank |
-| `AUTH0_DOMAIN`, `VITE_AUTH0_DOMAIN` | the Auth0 Domain |
-| `AUTH0_AUDIENCE`, `VITE_AUTH0_AUDIENCE` | `https://clinical-evidence-ca/api` |
-| `VITE_AUTH0_CLIENT_ID` | the Auth0 Client ID |
-| `CORS_ORIGINS` | `https://clinical-evidence-ca.onrender.com` |
 
-The first build takes a few minutes. If Render gives the service a different URL (it adds a
-suffix when the name is taken), use that URL in the three Auth0 fields and in `CORS_ORIGINS`.
+The first build takes a few minutes.
 
 `VITE_AUTH0_*` are compiled into the frontend at build time, so changing one needs a rebuild
-(*Save, rebuild, and deploy* in the Environment tab). Login needs both halves: with
-`AUTH0_DOMAIN` set but the `VITE_AUTH0_*` missing from the build, every request fails with
-"Sign in required".
+(push to `main`, or *Save, rebuild, and deploy* in the Environment tab). Login needs both
+halves: with `AUTH0_DOMAIN` set but the `VITE_AUTH0_*` missing from the build, every request
+fails with "Sign in required".
 
 ### 3. Invite a tester
 
-Auth0 → User Management → Users → Create User: connection `clinical-evidence-testers`, the
-tester's email, any long random password (don't send it). Send the tester the app URL and ask
+Auth0 dashboard (`honeybeelogic.ca.auth0.com`) → User Management → Users → Create User:
+connection `clinical-evidence-testers`, the tester's email, any long random password (don't
+send it). Send the tester the app URL and ask
 them to choose **Log in → Forgot password?** with that email to set their own password. To
 remove someone, block or delete the user.
 
